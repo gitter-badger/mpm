@@ -1,0 +1,39 @@
+<section data-ng-controller="ProjectsController" data-ng-init="findOne()">
+  <span>Submitted: <strong>{{project.created | date:'medium'}} </strong></span>
+  <span>By: <strong>{{project.user.name}} </strong></span>
+  <span>Email: <strong>{{project.email}}</strong></span>
+  <h2>{{project.projectName}} <span data-ng-if="hasAuthorization(project)">
+    <a class="btn" href="/#!/projects/{{project._id}}/edit">
+      <i class="glyphicon glyphicon-edit"></i>
+    </a>
+    <a class="btn" data-ng-click="remove(project);">
+      <i class="glyphicon glyphicon-trash"></i>
+    </a>
+  </span></h2>
+  <p>Completion Date: <strong>{{project.completionDate}}</strong></p>
+  <p>Request Type: <strong>{{project.requestType}}</strong></p>
+  <p>Submitted by: <strong>{{project.nameFirst}} {{project.nameLast}}</strong></p>
+  <p>Department: <strong>{{project.department}}</strong></p>
+  <div>{{project.content}}</div>
+  &nbsp;
+  <h4>Billing/Shipping Info</h4>
+  <p>Department/Cost Center: <strong>{{project.costCenter}}</strong></p>
+  <p>Additional Info: <strong>{{project.additionalInfo}}</strong></p>
+  <p>Shipping: <strong>{{project.shipping}}</strong></p>
+  <p>Attention: <strong>{{project.attention}}</strong></p>
+  <p>Street Address: <strong>{{project.address1}}</strong></p>
+  <p>Address Line 2: <strong>{{project.address2}}</strong></p>
+  <p>City: <strong>{{project.city}}</strong></p>
+  <p>State: <strong>{{project.State}}</strong></p>
+  <p>Zip: <strong>{{project.zip}}</strong></p>
+  <p>Country: <strong>{{project.country}}</strong></p>
+  &nbsp;
+  <h4>Project Info</h4>
+  <p>Project Details: <strong>{{project.projectDetails}}</strong></p>
+  <p>Project Audience: <strong>{{project.projectAudience}}</strong></p>
+  <p>Project Messaging: <strong>{{project.projectMessage}}</strong></p>
+  <p>Department Head Approving Project: <strong>{{project.departmentHeadApproving}}</strong></p>
+
+
+
+</section>

@@ -1,0 +1,72 @@
+<section data-ng-controller="ProjectsController" data-ng-init="find()">
+  <ul class="nav nav-tabs" data-ng-init="tab = 1">
+    <li class="active" data-ng-class="{active:tab===1}"><a href data-ng-click="tab = 1">All Projects</a></li>
+    <li data-ng-class="{active:tab===2}"><a href data-ng-click="tab = 2">Assigned Projects</a></li>
+    <li data-ng-class="{active:tab===3}"><a href data-ng-click="tab = 3">Requested Projects</a></li>
+  </ul>
+
+  <table class="table table-striped">
+    <thead><tr><th>Project Name</th><th>Requested On</th><th>Req. Date Due</th><th>Requested By</th><th>Assigned To</th><th>Status</th><th></th></tr></thead>
+    <tbody data-ng-show="tab === 1">
+    <tr data-ng-repeat="project in projects">
+      <td>{{project.projectName}}</td>
+      <td>{{project.created | date:'MM/dd/yyyy @ h:mma'}}</td>
+      <td>{{project.completionDate | date:'MM/dd/yyyy @ h:mma'}}</td>
+      <td>{{project.user.name}}</td>
+      <td>{{project.requestType}}</td>
+      <td>{{project.progress}}%</td>
+      <td>
+        <span data-ng-if="hasAuthorization(project)">
+          <a class="btn" href="/#!/projects/{{project._id}}/edit">
+            <i class="glyphicon glyphicon-edit"></i>
+          </a>
+          <a class="btn" data-ng-click="remove(project);">
+            <i class="glyphicon glyphicon-trash"></i>
+          </a>
+        </span></td>
+    </tr>
+    </tbody>
+
+    <tbody data-ng-show="tab === 2">
+    <tr data-ng-repeat="project in projects">
+      <td>{{project.projectName}}</td>
+      <td>{{project.created}}</td>
+      <td>{{project.completionDate}}</td>
+      <td>{{project.user.name}}</td>
+      <td>{{project.requestType}}</td>
+      <td>{{project.progress}}%</td>
+      <td>
+        <span data-ng-if="hasAuthorization(project)">
+          <a class="btn" href="/#!/projects/{{project._id}}/edit">
+            <i class="glyphicon glyphicon-edit"></i>
+          </a>
+          <a class="btn" data-ng-click="remove(project);">
+            <i class="glyphicon glyphicon-trash"></i>
+          </a>
+        </span></td>
+    </tr>
+    </tbody>
+
+    <tbody data-ng-show="tab === 3">
+    <tr data-ng-repeat="project in projects">
+      <td>{{project.projectName}}</td>
+      <td>{{project.created}}</td>
+      <td>{{project.completionDate}}</td>
+      <td>{{project.user.name}}</td>
+      <td>{{project.requestType}}</td>
+      <td>{{project.progress}}%</td>
+      <td>
+        <span data-ng-if="hasAuthorization(project)">
+          <a class="btn" href="/#!/projects/{{project._id}}/edit">
+            <i class="glyphicon glyphicon-edit"></i>
+          </a>
+          <a class="btn" data-ng-click="remove(project);">
+            <i class="glyphicon glyphicon-trash"></i>
+          </a>
+        </span></td>
+    </tr>
+    </tbody>
+  </table>
+  
+  <h1 data-ng-hide="!projects || projects.length">No projects yet. <br> Why don't you <a href="/#!/projects/create">Create One</a>?</h1>
+</section>

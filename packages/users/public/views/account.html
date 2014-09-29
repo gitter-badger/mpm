@@ -1,0 +1,45 @@
+<div class="userAccount" data-ng-controller="AccountCtrl">
+	<h2>Account</h2>
+	<p data-ng-hide="edit === 1">Username: <strong>{{user.username}}</strong><a class="btn" href data-ng-click="edit = 1"><i class="glyphicon glyphicon-edit"></i></a>
+	<form data-ng-show="edit === 1" data-ng-submit="update()">
+		<div class="input-wrapper">
+		<input type="text" name="username" placeholder="new username" ng-model="user.username">
+		<button data-ng-click="edit = 0" type="submit">Submit</button>
+		</div>
+	</form>
+	</p>
+	<p data-ng-hide="edit === 2">Name: <strong>{{user.name}}</strong><a class="btn" href data-ng-click="edit = 2"><i class="glyphicon glyphicon-edit"></i></a>
+	<form data-ng-show="edit === 2" data-ng-submit="update()">
+		<div class="input-wrapper">
+		<input type="text" name="name" placeholder="name" ng-model="user.name">
+		<button data-ng-click="edit = 0" type="submit">Submit</button>
+		</div>
+	</form>
+	</p>
+	<p data-ng-hide="edit === 3">Email: <strong>{{user.email}}</strong><a class="btn" href data-ng-click="edit = 3"><i class="glyphicon glyphicon-edit"></i></a>
+	<form data-ng-show="edit === 3" data-ng-submit="update()">
+		<div class="input-wrapper">
+		<input type="text" name="name" placeholder="email" ng-model="user.email">
+		<button data-ng-click="edit = 0" type="submit">Submit</button>
+		</div>
+	</form>
+	</p>
+	<p data-ng-hide="edit === 4">Department: <strong>{{user.department}}</strong><a class="btn" href data-ng-click="edit = 4"><i class="glyphicon glyphicon-edit"></i></a>
+	<form data-ng-show="edit === 4" data-ng-submit="update()">
+		<div class="input-wrapper">
+		<select type="text" name="name" placeholder="department" ng-model="user.department">
+			<option value="Marketing: Web">Marketing: Web</option>
+            <option value="Marketing: Media">Marketing: Media</option>
+            <option value="Marketing: Creative">Marketing: Creative</option>
+		</select>
+		<button data-ng-click="edit = 0" type="submit">Submit</button>
+		</div>
+	</form>
+	</p>
+	<ul>
+	<li data-ng-repeat="user in users">
+		{{user.username}}
+		{{user.email}}
+	</li>
+	</ul>
+</div>

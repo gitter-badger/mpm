@@ -9,7 +9,8 @@ var mongoose = require('mongoose'),
   config = require('meanio').loadConfig(),
   crypto = require('crypto'),
   nodemailer = require('nodemailer'),
-  templates = require('../template');
+  templates = require('../template'),
+  _ = require('lodash');
 
 /**
  * Auth callback
@@ -109,6 +110,21 @@ exports.me = function(req, res) {
 };
 
 /**
+ * Send All Users
+ */
+exports.all = function(req, res) {
+  User.find({}, {hashed_password: 0, salt: 0, __v: 0}).exec(function(err, users) {
+    if (err) {
+      return res.json(500, {
+        error: 'Cannot list the users'
+      });
+    }
+    res.json(users);
+
+  });
+};
+
+/**
  * Find user by id
  */
 exports.user = function(req, res, next, id) {
@@ -122,6 +138,27 @@ exports.user = function(req, res, next, id) {
       req.profile = user;
       next();
     });
+};
+
+
+/*
+Update User Account Info
+*/
+exports.update = function(req, res){
+  var user = req.user;
+
+  user = _.extend(user, req.body);
+
+  user.save(function(err) {
+    if (err) {
+      return res.json(500, {
+        error: 'Cannot update the user'
+      });
+    }
+    res.json(user);
+
+  });
+  
 };
 
 /**

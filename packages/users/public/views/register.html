@@ -32,6 +32,19 @@
         </div>
 
         <div class="input-wrapper">
+            <label>Department:</label>
+            <select required id="department" type="text" name="department" placeholder="Please Choose"
+                   ng-model="user.department">
+              <option value="Marketing: Web">Marketing: Web</option>
+              <option value="Marketing: Media">Marketing: Media</option>
+              <option value="Marketing: Creative">Marketing: Creative</option>
+            </select>
+
+            <div class="error_message">Please choose a department #</div>
+            <span class="pic username"></span>
+        </div>
+
+        <div class="input-wrapper">
             <input required id="password_block" name="password" type="{{input.type}}"
                    placeholder="{{input.placeholder}}" ng-model="user.password">
 
@@ -58,9 +71,6 @@
             <button type="submit" class="submit_button">Sign up</button>
             <p>Already have an account?</p>
             <a ui-sref='auth.login'>Log in</a>
-        </div>
-        <div class="woman_ninja_bottom">
-            <img src="/theme/assets/img/woman_ninja.png" alt="#">
         </div>
     </form>
 </div>

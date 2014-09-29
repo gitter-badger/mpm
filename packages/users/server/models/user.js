@@ -64,6 +64,10 @@ var UserSchema = new Schema({
     type: String,
     default: 'local'
   },
+  department: {
+    type: String,
+    default: 'Please Choose'
+  },
   salt: String,
   resetPasswordToken: String,
   resetPasswordExpires: Date,

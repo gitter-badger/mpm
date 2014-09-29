@@ -126,6 +126,34 @@ angular.module('mean.users')
       };
     }
   ])
+  .controller('AccountCtrl', ['$scope', '$rootScope', '$http', '$location', 'Global',
+    function($scope, $rootScope, $http, $location, Global) {
+      $scope.user = {};
+      $scope.global = Global;
+
+      $http.get('/users/me').success(function(data){$scope.user = data;});
+      $http.get('/users').success(function(data){$scope.users = data;});
+
+      $scope.update = function(){
+        var user = $scope.user;
+
+        $http.put('/users/me', {
+          username: user.username,
+          name: user.name,
+          emial: user.email,
+          department: user.department
+        })
+        .success(function(response){
+          $scope.response = response;
+        })
+        .error(function(error){
+          $scope.response = error;
+        });
+      };
+      
+      
+    }
+  ])
   .controller('ForgotPasswordCtrl', ['$scope', '$rootScope', '$http', '$location', 'Global',
     function($scope, $rootScope, $http, $location, Global) {
       $scope.user = {};

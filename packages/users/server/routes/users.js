@@ -9,7 +9,10 @@ module.exports = function(MeanUser, app, auth, database, passport) {
   app.route('/logout')
     .get(users.signout);
   app.route('/users/me')
-    .get(users.me);
+    .get(users.me)
+    .put(users.update);
+  app.route('/users')
+    .get(users.all);
 
   // Setting up the users api
   app.route('/register')
@@ -20,6 +23,9 @@ module.exports = function(MeanUser, app, auth, database, passport) {
 
   app.route('/reset/:token')
     .post(users.resetpassword);
+
+  app.route('/users/me/update')
+    .put(users.update);
 
   // Setting up the userId param
   app.param('userId', users.user);

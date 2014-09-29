@@ -40,6 +40,15 @@ footer {
 footer p {
 	padding: 5px 0 12px 10px
 }
+
+.form.main-form{
+    width:454px;
+    margin-left: -227px;
+}
+
+.userAccount{
+    text-align:left;
+}
 /*.ng-invalid.ng-dirty{*/
     /*border-color:#FA787E;*/
 /*}*/

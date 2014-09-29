@@ -1,9 +1,9 @@
 {
-  "name": "articles",
+  "name": "projects",
   "version": "0.0.1",
-  "description": "Articles example package",
+  "description": "Projects",
   "author": {
-    "name": "Linnovate"
+    "name": "McMonigle"
   },
   "mean": "0.4.x",
   "engines": {
