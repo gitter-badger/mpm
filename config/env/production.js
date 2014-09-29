@@ -27,7 +27,7 @@ module.exports = {
     */
   },
   app: {
-    name: 'MEAN - A Modern Stack - Production'
+    name: 'MPM - Marketing Project Management'
   },
   facebook: {
     clientID: 'APP_ID',
