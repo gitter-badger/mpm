@@ -9,7 +9,7 @@
     <thead><tr><th>Project Name</th><th>Requested On</th><th>Req. Date Due</th><th>Requested By</th><th>Assigned To</th><th>Status</th><th></th></tr></thead>
     <tbody data-ng-show="tab === 1">
     <tr data-ng-repeat="project in projects">
-      <td>{{project.projectName}}</td>
+      <td><a href="/#!/projects/{{project._id}}" class="">{{project.projectName}}</a></td>
       <td>{{project.created | date:'MM/dd/yyyy @ h:mma'}}</td>
       <td>{{project.completionDate | date:'MM/dd/yyyy @ h:mma'}}</td>
       <td>{{project.user.name}}</td>
@@ -28,7 +28,7 @@
     </tbody>
 
     <tbody data-ng-show="tab === 2">
-    <tr data-ng-repeat="project in projects">
+    <tr data-ng-repeat="project in assignedProjects">
       <td>{{project.projectName}}</td>
       <td>{{project.created}}</td>
       <td>{{project.completionDate}}</td>

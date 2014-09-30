@@ -99,6 +99,9 @@ angular.module('mean.projects').controller('ProjectsController', ['$scope', '$st
       Projects.query(function(projects) {
         $scope.projects = projects;
       });
+      Projects.query(function(projects) {
+        $scope.assignedProjects = projects;
+      });
     };
 
     $scope.findOne = function() {
