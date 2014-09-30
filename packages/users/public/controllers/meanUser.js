@@ -106,7 +106,8 @@ angular.module('mean.users')
           password: $scope.user.password,
           confirmPassword: $scope.user.confirmPassword,
           username: $scope.user.username,
-          name: $scope.user.name
+          name: $scope.user.name,
+          department: $scope.user.department
         })
           .success(function() {
             // authentication OK
@@ -161,7 +162,7 @@ angular.module('mean.users')
       $scope.global.registerForm = false;
       $scope.forgotpassword = function() {
         $http.post('/forgot-password', {
-          text: $scope.text
+          text: $scope.user.email
         })
           .success(function(response) {
             $scope.response = response;
