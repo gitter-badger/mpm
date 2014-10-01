@@ -133,7 +133,15 @@
       <label mean-token="'create-requestType'" class="col-md-3 control-label">Request Type</label>
       <div class="col-md-9">
         <select name="requestType" type="text" class="form-control" data-ng-model="requestType" id="requestType" required>
-          <option selected="selected" value="">Please select</option><option value="Global Request">Global Request</option><option value="Other or Multiple Items">Other or Multiple Items</option><option value="Eblast/Email Campaign">Eblast/Email Campaign</option><option value="Event">Event</option><option value="Focus Group/Research">Focus Group/Research</option><option value="New Artwork Design">New Artwork Design</option><option value="New Billboard/Print/Media Placement">New Billboard/Print/Media Placement</option><option value="New Flyer/Palm Card/Brochure">New Flyer/Palm Card/Brochure</option><option value="Marketing: Web">Marketing: Web</option><option value="Photo/Video Coverage">Photo/Video Coverage</option><option value="Postcard Mailer">Postcard Mailer</option><option value="Press Release">Press Release</option><option value="Social Media">Social Media</option><option value="Strategy Call">Strategy Call</option>
+          <option selected="selected" value="">Please select</option>
+          <option value="Marketing: Web">Marketing: Web</option>
+          <option value="Marketing: Creative">Marketing: Creative</option>
+          <option value="Marketing: Media">Marketing: Media</option>
+          <option value="Marketing: Photo/Video">Marketing: Photo/Video</option>
+          <option value="Marketing: Events">Marketing: Events</option>
+          <option value="Marketing: Social Media">Marketing: Social Media</option>
+          <option value="Marketing: Global">Marketing: Global</option>
+          <option value="Sales">Sales</option>
         </select>
         <div ng-show="submitted && projectForm.requestType.$invalid" class="help-block">
           <p ng-show="projectForm.requestType.$error.required">Please select an request type</p>

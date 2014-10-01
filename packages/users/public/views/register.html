@@ -33,11 +33,17 @@
 
         <div class="input-wrapper">
             <label>Department:</label>
-            <select required id="department" type="text" name="department" placeholder="Please Choose"
+            <select required id="department" type="text" name="department" 
                    ng-model="user.department">
+              <option selected="selected" value="">Please select</option>
               <option value="Marketing: Web">Marketing: Web</option>
-              <option value="Marketing: Media">Marketing: Media</option>
               <option value="Marketing: Creative">Marketing: Creative</option>
+              <option value="Marketing: Media">Marketing: Media</option>
+              <option value="Marketing: Photo/Video">Marketing: Photo/Video</option>
+              <option value="Marketing: Events">Marketing: Events</option>
+              <option value="Marketing: Social Media">Marketing: Social Media</option>
+              <option value="Marketing: Global">Marketing: Global</option>
+              <option value="Sales">Sales</option>
             </select>
 
             <div class="error_message">Please choose a department #</div>
