@@ -15,15 +15,17 @@ var ProjectSchema = new Schema({
     type: Date,
     default: Date.now
   },
-  nameFirst: {
-    type: String,
-    required: true,
-    trim: true
-  },
-  nameLast: {
-    type: String,
-    required: true,
-    trim: true
+  name: {
+    first: {
+      type: String,
+      required: true,
+      trim: true
+    },
+    last:{
+      type:String,
+      required: true,
+      trim: true
+    }
   },
   department: {
     type: String,
@@ -124,6 +126,12 @@ var ProjectSchema = new Schema({
     type: Number,
     default: 0
   },
+  notifications: [{
+    text: String,
+    userId: String,
+    userName: String,
+    status: String
+  }],
   user: {
     type: Schema.ObjectId,
     ref: 'User'
@@ -133,12 +141,12 @@ var ProjectSchema = new Schema({
 /**
  * Validations
  */
-ProjectSchema.path('nameFirst').validate(function(nameFirst) {
-  return !!nameFirst;
+ProjectSchema.path('name.first').validate(function(first) {
+  return !!first;
 }, 'First name cannot be blank');
 
-ProjectSchema.path('nameLast').validate(function(nameLast) {
-  return !!nameLast;
+ProjectSchema.path('name.last').validate(function(last) {
+  return !!last;
 }, 'Last name cannot be blank');
 
 ProjectSchema.path('department').validate(function(department) {

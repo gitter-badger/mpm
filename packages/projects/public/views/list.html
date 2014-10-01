@@ -3,10 +3,11 @@
     <li class="active" data-ng-class="{active:tab===1}"><a href data-ng-click="tab = 1">All Projects</a></li>
     <li data-ng-class="{active:tab===2}"><a href data-ng-click="tab = 2">Assigned Projects</a></li>
     <li data-ng-class="{active:tab===3}"><a href data-ng-click="tab = 3">Requested Projects</a></li>
+    <li data-ng-class="{active:tab===4}"><a href data-ng-click="tab = 4">Notifications</a></li>
   </ul>
 
-  <table class="table table-striped">
-    <thead><tr><th>Project Name</th><th>Requested On</th><th>Req. Date Due</th><th>Requested By</th><th>Assigned To</th><th>Status</th><th></th></tr></thead>
+  <table data-ng-hide="tab === 4" class="table table-striped">
+    <thead><tr><th>Project Title</th><th>Requested On</th><th>Req. Date Due</th><th>Requested By</th><th>Assigned To</th><th>Status</th><th></th></tr></thead>
     <tbody data-ng-show="tab === 1">
     <tr data-ng-repeat="project in projects">
       <td><a href="/#!/projects/{{project._id}}" class="">{{project.projectName}}</a></td>
@@ -28,7 +29,7 @@
     </tbody>
 
     <tbody data-ng-show="tab === 2">
-    <tr data-ng-repeat="project in assignedProjects">
+    <tr data-ng-repeat="project in projectsAssigned">
       <td>{{project.projectName}}</td>
       <td>{{project.created}}</td>
       <td>{{project.completionDate}}</td>
@@ -48,7 +49,7 @@
     </tbody>
 
     <tbody data-ng-show="tab === 3">
-    <tr data-ng-repeat="project in projects">
+    <tr data-ng-repeat="project in projectsRequested">
       <td>{{project.projectName}}</td>
       <td>{{project.created}}</td>
       <td>{{project.completionDate}}</td>
@@ -68,5 +69,25 @@
     </tbody>
   </table>
   
-  <h1 data-ng-hide="!projects || projects.length">No projects yet. <br> Why don't you <a href="/#!/projects/create">Create One</a>?</h1>
+  <table data-ng-show="tab === 4" class="table table-striped">
+    <thead>
+      <tr>
+        <th>Project Title</th>
+        <th>Requested On</th>
+        <th>Req. Due Date</th>
+        <th>Requested By</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr data-ng-repeat="project in projectNotifications">
+        <td>{{project.projectName}}</td>
+        <td>{{project.created  | date:'MM/dd/yyyy @ h:mma'}}</td>
+        <td>{{project.completionDate  | date:'MM/dd/yyyy @ h:mma'}}</td>
+        <td>{{project.user.name}}</td>
+        <td><button data-ng-click="accept(project);">Accept</button></td>
+      </tr>
+    </tbody>
+  </table>
+  
 </section>

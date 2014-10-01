@@ -161,6 +161,7 @@ exports.update = function(req, res){
   
 };
 
+
 /**
  * Resets the password
  */

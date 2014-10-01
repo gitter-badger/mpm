@@ -52,6 +52,16 @@ var UserSchema = new Schema({
     unique: true,
     required: true
   },
+  projects: {
+    requested: [{
+    title: String,
+    _id: String
+    }],
+    assigned: [{
+      title: String,
+      _id: String
+    }]
+  },
   roles: {
     type: Array,
     default: ['authenticated']
