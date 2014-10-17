@@ -95,7 +95,8 @@
             <div class="modal-header">
               <div class="row">
                 <div class="col-md-4"><h3 class="modal-title">Website</h3></div>
-                <div class="col-md-8"><em>Progress:</em><span><a class="btn" data-ng-click="editing = true" ng-hide="editing === true"><i class="glyphicon glyphicon-edit"></i></a><a class="btn" data-ng-click="editing = false" ng-show="editing === true"><i class="glyphicon glyphicon-ok-sign"></i></a></span><span><progressbar ng-hide="editing === true" class="progress-striped active" value="item.progress">{{item.progress}}%</progressbar></span><input type="number" ng-show="editing === true" data-ng-model="item.progress"></div>
+                <div class="col-md-8"><em>Progress:</em><span><a class="btn" data-ng-click="editing = true" ng-hide="editing === true"><i class="glyphicon glyphicon-edit"></i></a><a class="btn" data-ng-click="editing = false" ng-show="editing === true"><i class="glyphicon glyphicon-ok-sign"></i></a></span><span><progressbar ng-hide="editing === true" class="progress-striped active" value="item.progress">{{item.progress}}%</progressbar></span><input type="number" ng-show="editing === true" data-ng-model="item.progress">
+                </div>
               </div>
             </div>
             <div class="modal-body">
@@ -144,8 +145,12 @@
       <script type="text/ng-template" id="modal-splashpage.html">
         <form data-ng-submit="ok()">
           <div class="modal-header">
-              <h3 class="modal-title">Splash Page</h3>
-          </div>
+              <div class="row">
+                <div class="col-md-4"><h3 class="modal-title">Splash Page</h3></div>
+                <div class="col-md-8"><em>Progress:</em><span><a class="btn" data-ng-click="editing = true" ng-hide="editing === true"><i class="glyphicon glyphicon-edit"></i></a><a class="btn" data-ng-click="editing = false" ng-show="editing === true"><i class="glyphicon glyphicon-ok-sign"></i></a></span><span><progressbar ng-hide="editing === true" class="progress-striped active" value="item.progress">{{item.progress}}%</progressbar></span><input type="number" ng-show="editing === true" data-ng-model="item.progress">
+                </div>
+              </div>
+            </div>
           <div class="modal-body">
               <div class="form-group">
                 <label mean-token="'create-itemTitle'" class="control-label">Title</label>
@@ -200,8 +205,12 @@
       <script type="text/ng-template" id="modal-siteupdate.html">
         <form data-ng-submit="ok()">
           <div class="modal-header">
-              <h3 class="modal-title">Site Update</h3>
-          </div>
+              <div class="row">
+                <div class="col-md-4"><h3 class="modal-title">Site Update</h3></div>
+                <div class="col-md-8"><em>Progress:</em><span><a class="btn" data-ng-click="editing = true" ng-hide="editing === true"><i class="glyphicon glyphicon-edit"></i></a><a class="btn" data-ng-click="editing = false" ng-show="editing === true"><i class="glyphicon glyphicon-ok-sign"></i></a></span><span><progressbar ng-hide="editing === true" class="progress-striped active" value="item.progress">{{item.progress}}%</progressbar></span><input type="number" ng-show="editing === true" data-ng-model="item.progress">
+                </div>
+              </div>
+            </div>
           <div class="modal-body">
               <div class="form-group">
                 <label mean-token="'create-itemTitle'" class="control-label">Title</label>
