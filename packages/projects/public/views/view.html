@@ -1,38 +1,250 @@
 <section data-ng-controller="ProjectsController" data-ng-init="findOne()">
-  <span>Submitted: <strong>{{project.created | date:'medium'}} </strong></span>
-  <span>By: <strong>{{project.user.name}} </strong></span>
-  <span>Email: <strong>{{project.email}}</strong></span>
-  <h2>{{project.projectName}} <span data-ng-if="hasAuthorization(project)">
-    <a class="btn" href="/#!/projects/{{project._id}}/edit">
-      <i class="glyphicon glyphicon-edit"></i>
-    </a>
-    <a class="btn" data-ng-click="remove(project);">
-      <i class="glyphicon glyphicon-trash"></i>
-    </a>
-  </span></h2>
-  <p>Completion Date: <strong>{{project.completionDate}}</strong></p>
-  <p>Request Type: <strong>{{project.requestType}}</strong></p>
-  <p>Submitted by: <strong>{{project.nameFirst}} {{project.nameLast}}</strong></p>
-  <p>Department: <strong>{{project.department}}</strong></p>
-  <div>{{project.content}}</div>
+  <div class="row">
+    <div class="col-md-4">
+      <h1>{{project.general.projectName}}</h1>
+      <p>{{project.general.projectDescription}}</p>
+    </div>
+    <div class="col-md-8">
+      <h5>Total Progress:</h5>
+      <progressbar class="progress-striped active" type="success" value="project.progresstotal">{{project.progresstotal}}%</progressbar>
+
+      <div class="row col-md-6">
+        <div class="col-md-4">
+          <p>Submitted:</p>
+        </div>
+        <div class="col-md-8">
+          <strong>{{project.created | date:'MM/dd/yyyy'}}</strong>
+        </div>
+      </div>
+
+      <div class="row col-md-6">
+        <div class="col-md-4">
+          <p>Due:</p>
+        </div>
+        <div class="col-md-8">
+          <strong>{{project.general.completionDate | date:'MM/dd/yyyy'}}</strong>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <hr>
+  <div class="row">
+
+    <div class="col-md-6">
+      <div class="row">
+        <div class="col-md-4">
+          <p>Requestor:</p>
+        </div>
+        <div class="col-md-8">
+          <strong>{{project.general.name.first}} {{project.general.name.last}}</strong>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-4">
+          <p>Email:</p>
+        </div>
+        <div class="col-md-8">
+          <strong>{{project.general.email}}</strong>
+        </div>
+      </div>
+
+
+    </div>
+
+
+    <div class="col-md-6">
+      
+      <div class="row">
+        <div class="col-md-4">
+          <p>Department:</p>
+        </div>
+        <div class="col-md-8">
+          <strong>{{project.general.department}}</strong>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-4">
+          <p>Cost Center:</p>
+        </div>
+        <div class="col-md-8">
+          <strong>{{project.general.costCenter }}</strong>
+        </div>
+      </div>
+      
+
+    </div>
+  </div>
+  <hr>
   &nbsp;
-  <h4>Billing/Shipping Info</h4>
-  <p>Department/Cost Center: <strong>{{project.costCenter}}</strong></p>
-  <p>Additional Info: <strong>{{project.additionalInfo}}</strong></p>
-  <p>Shipping: <strong>{{project.shipping}}</strong></p>
-  <p>Attention: <strong>{{project.attention}}</strong></p>
-  <p>Street Address: <strong>{{project.address1}}</strong></p>
-  <p>Address Line 2: <strong>{{project.address2}}</strong></p>
-  <p>City: <strong>{{project.city}}</strong></p>
-  <p>State: <strong>{{project.State}}</strong></p>
-  <p>Zip: <strong>{{project.zip}}</strong></p>
-  <p>Country: <strong>{{project.country}}</strong></p>
-  &nbsp;
-  <h4>Project Info</h4>
-  <p>Project Details: <strong>{{project.projectDetails}}</strong></p>
-  <p>Project Audience: <strong>{{project.projectAudience}}</strong></p>
-  <p>Project Messaging: <strong>{{project.projectMessage}}</strong></p>
-  <p>Department Head Approving Project: <strong>{{project.departmentHeadApproving}}</strong></p>
+  <h4>Project Items</h4>
+  <div class="row info-box" data-ng-repeat="item in project.items">
+    <div class="col-md-4"><h5>{{item.subType}}: {{item.title}}</h5></div>
+    <div class="col-md-7"><h5><div class="col-md-2"><em>Progress:</em></div><div class="col-md-10"><progressbar class="progress-striped active" value="item.progress">{{item.progress}}%</progressbar></div></h5></div>
+    <div class="col-md-1" data-ng-controller="ModalController">
+      <span data-ng-if="hasItemAuth(project, item)"><a class="btn" data-ng-click="open(item.template, item)"><i class="glyphicon glyphicon-edit"></i></a></span>
+    </div>
+      <div class="clearfix"></div>
+  </div>
+
+  <div class="itemCtrl" data-ng-controller="ModalController">
+      <script type="text/ng-template" id="modal-website.html">
+          <form data-ng-submit="ok()">
+            <div class="modal-header">
+              <div class="row">
+                <div class="col-md-4"><h3 class="modal-title">Website</h3></div>
+                <div class="col-md-8"><em>Progress:</em><span><a class="btn" data-ng-click="editing = true" ng-hide="editing === true"><i class="glyphicon glyphicon-edit"></i></a><a class="btn" data-ng-click="editing = false" ng-show="editing === true"><i class="glyphicon glyphicon-ok-sign"></i></a></span><span><progressbar ng-hide="editing === true" class="progress-striped active" value="item.progress">{{item.progress}}%</progressbar></span><input type="number" ng-show="editing === true" data-ng-model="item.progress"></div>
+              </div>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                  <label mean-token="'create-itemTitle'" class="control-label">Title</label>
+                  <div>
+                    <input name="title" type="text" class="form-control" data-ng-model="item.title" id="title" placeholder="ex: Pharmacy Website" required>
+                  </div>
+                </div>
+              
+                <div class="form-group">
+                  <label mean-token="'create-businessLine'" class="control-label">Business Line</label>
+                  <div>
+                    <input name="businessLine" type="text" class="form-control" data-ng-model="item.businessLine" id="businessLine" placeholder="ex: Positive Healthcare, OTC, FreeHivTest.net" required>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label mean-token="'create-itemUrl'" class="control-label">URL</label>
+                  <div>
+                    <input name="url" type="text" class="form-control" data-ng-model="item.url" id="url" placeholder="ex: http://www.freehivtest.net" required>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label mean-token="'create-itemDescription'" class="control-label">Description</label>
+                  <div>
+                    <textarea name="itemDescription" type="text" cols="30" rows="10" class="form-control" data-ng-model="item.description" id="itemDescription" placeholder="Please provide a description of the project item" required></textarea>
+                  </div>
+                </div>
+
+
+                <div class="form-group">
+                  <label mean-token="'create-itemContent'" class="control-label">Site Content</label>
+                  <div>
+                    <textarea name="itemContent" type="text" cols="30" rows="10" class="form-control" data-ng-model="item.content" id="itemContent" placeholder="Please provide content/copy for project item. Ex: about page text, contact page info" required></textarea>
+                  </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a class="btn btn-warning" href data-ng-click="cancel()">Cancel</a><button class="btn btn-primary">Save</button>
+            </div>
+          </form>
+      </script>
+
+      <script type="text/ng-template" id="modal-splashpage.html">
+        <form data-ng-submit="ok()">
+          <div class="modal-header">
+              <h3 class="modal-title">Splash Page</h3>
+          </div>
+          <div class="modal-body">
+              <div class="form-group">
+                <label mean-token="'create-itemTitle'" class="control-label">Title</label>
+                <div>
+                  <input name="itemTitle" type="text" class="form-control" data-ng-model="item.title" id="itemTitle" placeholder="ex: Pharmacy Website" required>
+                </div>
+              </div>
+            
+              <div class="form-group">
+                <label mean-token="'create-itemBusinessLine'" class="control-label">Business Line</label>
+                <div>
+                  <input name="itemBusinessLine" type="text" class="form-control" data-ng-model="item.businessLine" id="itemBusinessLine" placeholder="ex: Positive Healthcare, OTC, FreeHivTest.net" required>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label mean-token="'create-webUrl'" class="control-label">URL</label>
+                <div>
+                  <input name="itemUrl" type="text" class="form-control" data-ng-model="item.url" id="itemUrl" placeholder="ex: http://www.freehivtest.net" required>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label mean-token="'create-itemDescription'" class="control-label">Description</label>
+                <div>
+                  <textarea name="itemDescription" type="text" cols="30" rows="10" class="form-control" data-ng-model="item.description" id="itemDescription" placeholder="Please provide a description of the project item" required></textarea>
+                </div>
+              </div>
+
+
+              <div class="form-group">
+                <label mean-token="'create-itemContent'" class="control-label">Splash Page Content</label>
+                <div>
+                  <textarea name="itemContent" type="text" cols="30" rows="10" class="form-control" data-ng-model="item.content" id="itemContent" placeholder="Please provide content/copy for project item. Ex: page text, imagery" required></textarea>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label mean-token="'create-itemCta'" class="control-label">Call To Action</label>
+                <div>
+                  <textarea name="itemCta" type="text" cols="30" rows="10" class="form-control" data-ng-model="item.cta" id="itemCta" placeholder="Please describe the splash page call to action." required></textarea>
+                </div>
+              </div>
+          </div>
+          <div class="modal-footer">
+              <a class="btn btn-warning" href data-ng-click="cancel()">Cancel</a><button class="btn btn-primary">Save</button>
+          </div>
+        </form>
+      </script>
+
+
+      <script type="text/ng-template" id="modal-siteupdate.html">
+        <form data-ng-submit="ok()">
+          <div class="modal-header">
+              <h3 class="modal-title">Site Update</h3>
+          </div>
+          <div class="modal-body">
+              <div class="form-group">
+                <label mean-token="'create-itemTitle'" class="control-label">Title</label>
+                <div>
+                  <input name="itemTitle" type="text" class="form-control" data-ng-model="item.title" id="itemTitle" placeholder="ex: Pharmacy Website" required>
+                </div>
+              </div>
+            
+              <div class="form-group">
+                <label mean-token="'create-itemBusinessLine'" class="control-label">Business Line</label>
+                <div>
+                  <input name="itemBusinessLine" type="text" class="form-control" data-ng-model="item.businessLine" id="itemBusinessLine" placeholder="ex: Positive Healthcare, OTC, FreeHivTest.net" required>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label mean-token="'create-itemUrl'" class="control-label">URL</label>
+                <div>
+                  <input name="itemUrl" type="text" class="form-control" data-ng-model="item.url" id="itemUrl" placeholder="ex: http://www.freehivtest.net" required>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label mean-token="'create-itemDescription'" class="control-label">Description</label>
+                <div>
+                  <textarea name="itemDescription" type="text" cols="30" rows="10" class="form-control" data-ng-model="item.description" id="itemDescription" placeholder="Please provide a description of the project item" required></textarea>
+                </div>
+              </div>
+
+
+              <div class="form-group">
+                <label mean-token="'create-itemContent'" class="control-label">Site Content</label>
+                <div>
+                  <textarea name="itemContent" type="text" cols="30" rows="10" class="form-control" data-ng-model="item.content" id="itemContent" placeholder="Please provide content/copy for project item. Ex: about page text, contact page info" required></textarea>
+                </div>
+              </div>
+          </div>
+          <div class="modal-footer">
+              <a class="btn btn-warning" href data-ng-click="cancel()">Cancel</a><button class="btn btn-primary">Save</button>
+          </div>
+        </form>
+      </script>
+    </div>
 
 
 

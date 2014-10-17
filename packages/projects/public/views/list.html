@@ -7,15 +7,15 @@
   </ul>
 
   <table data-ng-hide="tab === 4" class="table table-striped">
-    <thead><tr><th>Project Title</th><th>Requested On</th><th>Req. Date Due</th><th>Requested By</th><th>Assigned To</th><th>Status</th><th></th></tr></thead>
+    <thead><tr><th><a href data-ng-click="sortField = 'general.projectName'">Project Title</a></th><th><a href data-ng-click="sortField = 'created'">Requested On</a></th><th><a href data-ng-click="sortField = 'general.completionDate'">Req. Date Due</a></th><th><a href data-ng-click="sortField = 'general.user.name.last'">Requested By</a></th><th>Assigned To</th><th><a href data-ng-click="sortField = 'progress'">Status</a></th><th></th></tr></thead>
     <tbody data-ng-show="tab === 1">
-    <tr data-ng-repeat="project in projects">
-      <td><a href="/#!/projects/{{project._id}}" class="">{{project.projectName}}</a></td>
-      <td>{{project.created | date:'MM/dd/yyyy @ h:mma'}}</td>
-      <td>{{project.completionDate | date:'MM/dd/yyyy @ h:mma'}}</td>
-      <td>{{project.user.name}}</td>
+    <tr data-ng-repeat="project in projects | orderBy:sortField">
+      <td><a href="/#!/projects/{{project._id}}" class="">{{project.general.projectName}}</a></td>
+      <td>{{project.created | date:'MM/dd/yyyy'}}</td>
+      <td>{{project.general.completionDate | date:'MM/dd/yyyy'}}</td>
+      <td>{{project.user.name.first}} {{project.user.name.last}}</td>
       <td>{{project.requestType}}</td>
-      <td>{{project.progress}}%</td>
+      <td><progressbar class="progress-striped active" type="success" value="project.progresstotal">{{project.progresstotal}}%</progressbar></td>
       <td>
         <span data-ng-if="hasAuthorization(project)">
           <a class="btn" href="/#!/projects/{{project._id}}/edit">
@@ -30,12 +30,12 @@
 
     <tbody data-ng-show="tab === 2">
     <tr data-ng-repeat="project in projectsAssigned">
-      <td>{{project.projectName}}</td>
-      <td>{{project.created}}</td>
-      <td>{{project.completionDate}}</td>
-      <td>{{project.user.name}}</td>
+      <td><a href="/#!/projects/{{project._id}}" class="">{{project.general.projectName}}</a></td>
+      <td>{{project.created | date:'MM/dd/yyyy'}}</td>
+      <td>{{project.general.completionDate | date:'MM/dd/yyyy'}}</td>
+      <td>{{project.user.name.first}} {{project.user.name.last}}</td>
       <td>{{project.requestType}}</td>
-      <td>{{project.progress}}%</td>
+      <td><progressbar class="progress-striped active" type="success" value="project.progresstotal">{{project.progresstotal}}%</progressbar></td>
       <td>
         <span data-ng-if="hasAuthorization(project)">
           <a class="btn" href="/#!/projects/{{project._id}}/edit">
@@ -50,12 +50,12 @@
 
     <tbody data-ng-show="tab === 3">
     <tr data-ng-repeat="project in projectsRequested">
-      <td>{{project.projectName}}</td>
-      <td>{{project.created}}</td>
-      <td>{{project.completionDate}}</td>
-      <td>{{project.user.name}}</td>
+      <td><a href="/#!/projects/{{project._id}}" class="">{{project.general.projectName}}</a></td>
+      <td>{{project.created | date:'MM/dd/yyyy'}}</td>
+      <td>{{project.general.completionDate | date:'MM/dd/yyyy'}}</td>
+      <td>{{project.user.name.first}} {{project.user.name.last}}</td>
       <td>{{project.requestType}}</td>
-      <td>{{project.progress}}%</td>
+      <td><progressbar class="progress-striped active" type="success" value="project.progresstotal">{{project.progresstotal}}%</progressbar></td>
       <td>
         <span data-ng-if="hasAuthorization(project)">
           <a class="btn" href="/#!/projects/{{project._id}}/edit">
@@ -81,11 +81,11 @@
     </thead>
     <tbody>
       <tr data-ng-repeat="project in projectNotifications">
-        <td>{{project.projectName}}</td>
-        <td>{{project.created  | date:'MM/dd/yyyy @ h:mma'}}</td>
-        <td>{{project.completionDate  | date:'MM/dd/yyyy @ h:mma'}}</td>
-        <td>{{project.user.name}}</td>
-        <td><button data-ng-click="accept(project);">Accept</button></td>
+        <td><a href="/#!/projects/{{project._id}}" class="">{{project.general.projectName}}</a></td>
+        <td>{{project.created  | date:'MM/dd/yyyy'}}</td>
+        <td>{{project.general.completionDate  | date:'MM/dd/yyyy'}}</td>
+        <td>{{project.user.name.first}} {{project.user.name.last}}</td>
+        <td><button class="btn btn-info" data-ng-click="accept(project);">Accept</button></td>
       </tr>
     </tbody>
   </table>

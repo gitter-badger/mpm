@@ -106,7 +106,10 @@ angular.module('mean.users')
           password: $scope.user.password,
           confirmPassword: $scope.user.confirmPassword,
           username: $scope.user.username,
-          name: $scope.user.name,
+          name: {
+            first: $scope.user.name.first,
+            last: $scope.user.name.last
+          },
           department: $scope.user.department
         })
           .success(function() {

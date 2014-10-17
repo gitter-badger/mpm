@@ -1,213 +1,300 @@
 <section data-ng-controller="ProjectsController">
-  <form name="projectForm" class="form-horizontal col-md-6" role="form" data-ng-submit="create(projectForm.$valid)" novalidate>
-    <h2>General Information</h2>
-    <div class="form-group" ng-class="{ 'has-error' : submitted && projectForm.nameFirst.$invalid }">
-      <label mean-token="'create-nameFirst'" class="col-md-3 control-label">First Name</label>
-      <div class="col-md-9">
-        <input name="nameFirst" type="text" class="form-control" data-ng-model="nameFirst" id="nameFirst" placeholder="First Name" required>
-        <div ng-show="submitted && projectForm.nameFirst.$invalid" class="help-block">
-          <p ng-show="projectForm.nameFirst.$error.required">First name is required</p>
+  <form name="projectForm" class="col-md-12" role="form" data-ng-submit="create(projectForm.$valid)" data-ng-init="itemCount = 0"novalidate>
+   <h2 class="text-center">Project Request</h2>
+   <br>
+    <!--
+    General Project Information
+    -->
+    <h5 class="text-center">General Information</h5>
+    <hr>
+    <div class="row">
+      <div class="col-md-6">
+          <div class="form-group" ng-class="{ 'has-error' : submitted && projectForm.projectName.$invalid }">
+            <label mean-token="'create-projectName'" class="control-label">Project Name<span class="error">*</span></label>
+            <div>
+              <input name="projectName" type="text" class="form-control" data-ng-model="projectName" id="projectName" placeholder="Project Name" required>
+              <div ng-show="submitted && projectForm.projectName.$invalid" class="help-block">
+                <p ng-show="projectForm.projectName.$error.required">Project name is required</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group" ng-class="{ 'has-error' : submitted && projectForm.projectDescription.$invalid }">
+            <label mean-token="'create-projectDescription'" class="control-label">Project Details<span class="error">*</span></label>
+            <div>
+              <textarea name="projectDescription" type="text" cols="30" rows="10" class="form-control" data-ng-model="projectDescription" id="projectDetails" placeholder="Explain your project needs here." required></textarea>
+              <div ng-show="submitted && projectForm.projectDescription.$invalid" class="help-block">
+                <p ng-show="projectForm.projectDescription.$error.required">Project description is required</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group" >
+            <label mean-token="'create-projectAudience'" class="control-label">What audience are you trying to reach?</label>
+            <div>
+              <input name="projectAudience" type="text" class="form-control" data-ng-model="projectAudience" id="projectAudience" placeholder="EX: Clients, Providers, MSMs">
+            </div>
+          </div>
+
+          <div class="form-group" >
+            <label mean-token="'create-projectMessage'" class="control-label">What is the primary message you would like conveyed?</label>
+            <div>
+              <input name="projectMessage" type="text" class="form-control" data-ng-model="projectMessage" id="projectMessage" placeholder="EX: Safe Sex, Aids is a Civil Rights Issue">
+            </div>
+          </div>
+
+      </div>
+
+      <div class="col-md-6">
+
+          <div class="form-group" ng-class="{ 'has-error' : submitted && projectForm.costCenter.$invalid }">
+            <label mean-token="'create-costCenter'" class="control-label">Department/Cost Center<span class="error">*</span></label>
+            <div>
+              <input name="costCenter" type="text" class="form-control" data-ng-model="costCenter" id="costCenter" placeholder="Cost Center" required>
+              <div ng-show="submitted && projectForm.costCenter.$invalid" class="help-block">
+                <p ng-show="projectForm.costCenter.$error.required">Cost center is required</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label mean-token="'create-additionalInfo'" for="additionalInfo" class="control-label">Additional expense types and percentage breakdowns</label>
+            <div>
+              <textarea name="additionalInfo" data-ng-model="additionalInfo" id="additionalInfo" cols="30" rows="10" placeholder="Additional Info" class="form-control"></textarea>
+              
+            </div>
+          </div>
+
+          <div class="form-group" ng-class="{ 'has-error' : submitted && projectForm.departmentHeadApproving.$invalid }">
+            <label mean-token="'create-departmentHeadApproving'" class="control-label">Department Head<span class="error">*</span></label>
+            <div>
+              <input name="departmentHeadApproving" type="text" class="form-control" data-ng-model="departmentHeadApproving" id="departmentHeadApproving" placeholder="The name of the department head approving this project" required>
+              <div ng-show="submitted && projectForm.departmentHeadApproving.$invalid" class="help-block">
+                <p ng-show="projectForm.departmentHeadApproving.$error.required">Department head approving this project is required</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+              <div class="col-md-6" data-ng-controller="DateController">
+                  <label mean-token="'create-dt'" class="control-label">Requested Completion Date<span class="error">*</span></label>
+                  <div class="input-group">
+                    <input type="text" class="form-control" datepicker-popup="MM.dd.yyyy" ng-model="$parent.dt" is-open="opened" min-date="minDate" max-date="'2015-06-22'" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="true" close-text="Close" required/>
+                    <span class="input-group-btn">
+                      <button type="button" class="btn btn-default" ng-click="open($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                    </span>
+                  </div>
+              </div>
+          </div>
+
+
+      </div>
+
+
+    </div>
+
+    <br>
+    <h5 class="text-center">Project Items</h5>
+    <div class="row">
+      <small class="col-md-offset-4 col-md-4 text-center">You can add one or multiple items to your project. Just choose a category from the dropdown below and click "add".</small>
+    </div>
+    <hr>
+
+    <div class="itemCtrl" data-ng-controller="ModalController">
+      <div class="row">
+        <div class="col-md-offset-4 col-md-4">
+          <alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}{{alert.kind}}</alert>
+          <div class="row">
+            <div class="col-md-offset-2 col-md-8">
+              <div class="btn-group" dropdown is-open="status.isopen" on-toggle="toggled(open)">
+                <button type="button" class="btn btn-primary dropdown-toggle">
+                  <span data-ng-show="modalType === null">Choose Item <span class="caret"></span></span>
+                  <span data-ng-show="modalType !== null">{{modalType.name}} <span class="caret"></span></span>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                  <li data-ng-repeat="choice in items">
+                    <a ng-click="choose(choice.name, choice.template, choice.department)">{{choice.name}}</a>
+                  </li>
+                </ul>
+              </div>
+              <a class="btn btn-default" ng-click="open(modalType.template)">Add +</a>
+            </div>
+          </div>
         </div>
       </div>
+      <br>
+      <script type="text/ng-template" id="modal-website.html">
+          <form data-ng-submit="ok()">
+            <div class="modal-header">
+                <h3 class="modal-title">Website</h3>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                  <label mean-token="'create-itemTitle'" class="control-label">Title</label>
+                  <div>
+                    <input name="title" type="text" class="form-control" data-ng-model="item.title" id="title" placeholder="ex: Pharmacy Website" required>
+                  </div>
+                </div>
+              
+                <div class="form-group">
+                  <label mean-token="'create-businessLine'" class="control-label">Business Line</label>
+                  <div>
+                    <input name="businessLine" type="text" class="form-control" data-ng-model="item.businessLine" id="businessLine" placeholder="ex: Positive Healthcare, OTC, FreeHivTest.net" required>
+                  </div>
+                </div>
 
-    </div>
-    <div class="form-group" ng-class="{ 'has-error' : submitted && projectForm.nameLast.$invalid }">
-      <label mean-token="'create-nameLast'" class="col-md-3 control-label">Last Name</label>
-      <div class="col-md-9">
-        <input name="nameLast" type="text" class="form-control" data-ng-model="nameLast" id="nameLast" placeholder="Last Name" required>
-        <div ng-show="submitted && projectForm.nameLast.$invalid" class="help-block">
-          <p ng-show="projectForm.nameLast.$error.required">Last name is required</p>
-        </div>
-      </div>
+                <div class="form-group">
+                  <label mean-token="'create-itemUrl'" class="control-label">URL</label>
+                  <div>
+                    <input name="url" type="text" class="form-control" data-ng-model="item.url" id="url" placeholder="ex: http://www.freehivtest.net" required>
+                  </div>
+                </div>
 
-    </div>
-    <div class="form-group" ng-class="{ 'has-error' : submitted && projectForm.department.$invalid }">
-      <label mean-token="'create-department'" class="col-md-3 control-label">Department</label>
-      <div class="col-md-9">
-        <input name="department" type="text" class="form-control" data-ng-model="department" id="department" placeholder="Department" required>
-        <div ng-show="submitted && projectForm.department.$invalid" class="help-block">
-          <p ng-show="projectForm.department.$error.required">Department is required</p>
-        </div>
-      </div>
+                <div class="form-group">
+                  <label mean-token="'create-itemDescription'" class="control-label">Description</label>
+                  <div>
+                    <textarea name="itemDescription" type="text" cols="30" rows="10" class="form-control" data-ng-model="item.description" id="itemDescription" placeholder="Please provide a description of the project item" required></textarea>
+                  </div>
+                </div>
 
-    </div>
-    <div class="form-group" ng-class="{ 'has-error' : submitted && projectForm.email.$invalid }">
-      <label mean-token="'create-email'" class="col-md-3 control-label">Email</label>
-      <div class="col-md-9">
-        <input name="email" type="text" class="form-control" data-ng-model="email" id="email" placeholder="Email" required>
-        <div ng-show="submitted && projectForm.email.$invalid" class="help-block">
-          <p ng-show="projectForm.email.$error.required">Email is required</p>
-        </div>
-      </div>
+
+                <div class="form-group">
+                  <label mean-token="'create-itemContent'" class="control-label">Site Content</label>
+                  <div>
+                    <textarea name="itemContent" type="text" cols="30" rows="10" class="form-control" data-ng-model="item.content" id="itemContent" placeholder="Please provide content/copy for project item. Ex: about page text, contact page info" required></textarea>
+                  </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a class="btn btn-warning" href data-ng-click="cancel()">Cancel</a><button class="btn btn-primary">Save</button>
+            </div>
+          </form>
+      </script>
+
+      <script type="text/ng-template" id="modal-splashpage.html">
+        <form data-ng-submit="ok()">
+          <div class="modal-header">
+              <h3 class="modal-title">Splash Page</h3>
+          </div>
+          <div class="modal-body">
+              <div class="form-group">
+                <label mean-token="'create-itemTitle'" class="control-label">Title</label>
+                <div>
+                  <input name="itemTitle" type="text" class="form-control" data-ng-model="item.title" id="itemTitle" placeholder="ex: Pharmacy Website" required>
+                </div>
+              </div>
+            
+              <div class="form-group">
+                <label mean-token="'create-itemBusinessLine'" class="control-label">Business Line</label>
+                <div>
+                  <input name="itemBusinessLine" type="text" class="form-control" data-ng-model="item.businessLine" id="itemBusinessLine" placeholder="ex: Positive Healthcare, OTC, FreeHivTest.net" required>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label mean-token="'create-webUrl'" class="control-label">URL</label>
+                <div>
+                  <input name="itemUrl" type="text" class="form-control" data-ng-model="item.url" id="itemUrl" placeholder="ex: http://www.freehivtest.net" required>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label mean-token="'create-itemDescription'" class="control-label">Description</label>
+                <div>
+                  <textarea name="itemDescription" type="text" cols="30" rows="10" class="form-control" data-ng-model="item.description" id="itemDescription" placeholder="Please provide a description of the project item" required></textarea>
+                </div>
+              </div>
+
+
+              <div class="form-group">
+                <label mean-token="'create-itemContent'" class="control-label">Splash Page Content</label>
+                <div>
+                  <textarea name="itemContent" type="text" cols="30" rows="10" class="form-control" data-ng-model="item.content" id="itemContent" placeholder="Please provide content/copy for project item. Ex: page text, imagery" required></textarea>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label mean-token="'create-itemCta'" class="control-label">Call To Action</label>
+                <div>
+                  <textarea name="itemCta" type="text" cols="30" rows="10" class="form-control" data-ng-model="item.cta" id="itemCta" placeholder="Please describe the splash page call to action." required></textarea>
+                </div>
+              </div>
+          </div>
+          <div class="modal-footer">
+              <a class="btn btn-warning" href data-ng-click="cancel()">Cancel</a><button class="btn btn-primary">Save</button>
+          </div>
+        </form>
+      </script>
+
+
+      <script type="text/ng-template" id="modal-siteupdate.html">
+        <form data-ng-submit="ok()">
+          <div class="modal-header">
+              <h3 class="modal-title">Site Update</h3>
+          </div>
+          <div class="modal-body">
+              <div class="form-group">
+                <label mean-token="'create-itemTitle'" class="control-label">Title</label>
+                <div>
+                  <input name="itemTitle" type="text" class="form-control" data-ng-model="item.title" id="itemTitle" placeholder="ex: Pharmacy Website" required>
+                </div>
+              </div>
+            
+              <div class="form-group">
+                <label mean-token="'create-itemBusinessLine'" class="control-label">Business Line</label>
+                <div>
+                  <input name="itemBusinessLine" type="text" class="form-control" data-ng-model="item.businessLine" id="itemBusinessLine" placeholder="ex: Positive Healthcare, OTC, FreeHivTest.net" required>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label mean-token="'create-itemUrl'" class="control-label">URL</label>
+                <div>
+                  <input name="itemUrl" type="text" class="form-control" data-ng-model="item.url" id="itemUrl" placeholder="ex: http://www.freehivtest.net" required>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label mean-token="'create-itemDescription'" class="control-label">Description</label>
+                <div>
+                  <textarea name="itemDescription" type="text" cols="30" rows="10" class="form-control" data-ng-model="item.description" id="itemDescription" placeholder="Please provide a description of the project item" required></textarea>
+                </div>
+              </div>
+
+
+              <div class="form-group">
+                <label mean-token="'create-itemContent'" class="control-label">Site Content</label>
+                <div>
+                  <textarea name="itemContent" type="text" cols="30" rows="10" class="form-control" data-ng-model="item.content" id="itemContent" placeholder="Please provide content/copy for project item. Ex: about page text, contact page info" required></textarea>
+                </div>
+              </div>
+          </div>
+          <div class="modal-footer">
+              <a class="btn btn-warning" href data-ng-click="cancel()">Cancel</a><button class="btn btn-primary">Save</button>
+          </div>
+        </form>
+      </script>
     </div>
 
-    <h2>Billing/Shipping Information</h2>
-    <div class="form-group" ng-class="{ 'has-error' : submitted && projectForm.costCenter.$invalid }">
-      <label mean-token="'create-costCenter'" class="col-md-3 control-label">Department/Cost Center</label>
-      <div class="col-md-9">
-        <input name="costCenter" type="text" class="form-control" data-ng-model="costCenter" id="costCenter" placeholder="Cost Center" required>
-        <div ng-show="submitted && projectForm.costCenter.$invalid" class="help-block">
-          <p ng-show="projectForm.costCenter.$error.required">Cost center is required</p>
-        </div>
+    <div class="info-box" data-ng-repeat="item in allProjectItems.items">
+      <div class="col-md-2"><h5>{{item.subType}}</h5></div>
+      <div class="col-md-4"><h5><em>Title:</em> {{item.title}}</h5></div>
+      <div class="col-md-4"><h5><em>Description:</em> {{item.description}}</h5></div>
+      <div class="col-md-2" data-ng-controller="ModalController">
+        <span><a class="btn" data-ng-click="open(item.template, item)"><i class="glyphicon glyphicon-edit"></i></a></span>
+        <span><a class="btn" data-ng-click="item.remove($index)"><i class="glyphicon glyphicon-trash"></i></a></span>
       </div>
-    </div>
-
-    <div class="form-group">
-      <label mean-token="'create-additionalInfo'" for="additionalInfo" class="col-md-3 control-label">Enter additional expense types and percentage breakdowns here if necessary.</label>
-      <div class="col-md-9">
-        <textarea name="additionalInfo" data-ng-model="additionalInfo" id="additionalInfo" cols="30" rows="10" placeholder="Additional Info" class="form-control"></textarea>
-        
-      </div>
-    </div>
-
-    <div class="form-group" ng-class="{ 'has-error' : submitted && projectForm.shipping.$invalid }">
-      <label mean-token="'create-shipping'" class="col-md-3 control-label">Shipping</label>
-      <div class="col-md-9">
-        <select name="shipping" type="text" class="form-control" data-ng-model="shipping" id="shipping" required>
-          <option selected="selected" value="">Please select</option>
-          <option value="Yes">Yes</option>
-          <option value="No">No</option>
-        </select>
-        <div ng-show="submitted && projectForm.shipping.$invalid" class="help-block">
-          <p ng-show="projectForm.shipping.$error.required">Please select an option</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="form-group" ng-class="{ 'has-error' : submitted && projectForm.attention.$invalid }">
-      <label mean-token="'create-attention'" class="col-md-3 control-label">Attention</label>
-      <div class="col-md-9">
-        <input name="attention" type="text" class="form-control" data-ng-model="attention" id="attention" placeholder="Department or Name Here" required>
-        <div ng-show="submitted && projectForm.attention.$invalid" class="help-block">
-          <p ng-show="projectForm.attention.$error.required">Attention is required</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="form-group" >
-      <label mean-token="'create-address1'" class="col-md-3 control-label">Street Address</label>
-      <div class="col-md-9">
-        <input name="address1" type="text" class="form-control" data-ng-model="address1" id="address1" placeholder="Street Address">
-      </div>
-    </div>
-
-    <div class="form-group" >
-      <label mean-token="'create-address2'" class="col-md-3 control-label">Address Line 2</label>
-      <div class="col-md-9">
-        <input name="address2" type="text" class="form-control" data-ng-model="address2" id="address2" placeholder="Address Line 2">
-      </div>
-    </div>
-
-    <div class="form-group" >
-      <label mean-token="'create-city'" class="col-md-3 control-label">City</label>
-      <div class="col-md-9">
-        <input name="city" type="text" class="form-control" data-ng-model="city" id="city" placeholder="City">
-      </div>
-    </div>
-
-    <div class="form-group" >
-      <label mean-token="'create-State'" class="col-md-3 control-label">State</label>
-      <div class="col-md-9">
-        <input name="State" type="text" class="form-control" data-ng-model="State" id="State" placeholder="State">
-      </div>
-    </div>
-
-    <div class="form-group" >
-      <label mean-token="'create-zip'" class="col-md-3 control-label">Zip</label>
-      <div class="col-md-9">
-        <input name="zip" type="text" class="form-control" data-ng-model="zip" id="zip" placeholder="Zip">
-      </div>
-    </div>
-
-    <div class="form-group" >
-      <label mean-token="'create-country'" class="col-md-3 control-label">Country</label>
-      <div class="col-md-9">
-        <select name="country" type="text" class="form-control" data-ng-model="country" id="country">
-          <option selected="selected" value="">Please select</option><option value="US">United States</option><option value="GB">United Kingdom</option><option value="CA">Canada</option><option value="IN">India</option><option value="NL">Netherlands</option><option value="AU">Australia</option><option value="ZA">South Africa</option><option value="FR">France</option><option value="DE">Germany</option><option value="SG">Singapore</option><option value="SE">Sweden</option><option value="BR">Brazil</option><option value="">————–</option><option value="AF">Afghanistan</option><option value="AX">Åland Islands</option><option value="AL">Albania</option><option value="DZ">Algeria</option><option value="AS">American Samoa</option><option value="AD">Andorra</option><option value="AO">Angola</option><option value="AI">Anguilla</option><option value="AQ">Antarctica</option><option value="AG">Antigua and Barbuda</option><option value="AR">Argentina</option><option value="AM">Armenia</option><option value="AW">Aruba</option><option value="AU">Australia</option><option value="AT">Austria</option><option value="AZ">Azerbaijan</option><option value="BS">Bahamas</option><option value="BH">Bahrain</option><option value="BD">Bangladesh</option><option value="BB">Barbados</option><option value="BY">Belarus</option><option value="BE">Belgium</option><option value="BZ">Belize</option><option value="BJ">Benin</option><option value="BM">Bermuda</option><option value="BT">Bhutan</option><option value="BO">Bolivia</option><option value="BA">Bosnia and Herzegovina</option><option value="BW">Botswana</option><option value="BV">Bouvet Island</option><option value="BR">Brazil</option><option value="IO">Brit/Indian Ocean Terr.</option><option value="BN">Brunei Darussalam</option><option value="BG">Bulgaria</option><option value="BF">Burkina Faso</option><option value="BI">Burundi</option><option value="KH">Cambodia</option><option value="CM">Cameroon</option><option value="CA">Canada</option><option value="CV">Cape Verde</option><option value="KY">Cayman Islands</option><option value="CF">Central African Republic</option><option value="TD">Chad</option><option value="CL">Chile</option><option value="CN">China</option><option value="CX">Christmas Island</option><option value="CC">Cocos (Keeling) Islands</option><option value="CO">Colombia</option><option value="KM">Comoros</option><option value="CG">Congo</option><option value="CD">Congo, The Dem. Republic Of</option><option value="CK">Cook Islands</option><option value="CR">Costa Rica</option><option value="CI">Côte D’Ivore</option><option value="HR">Croatia</option><option value="CU">Cuba</option><option value="CY">Cyprus</option><option value="CZ">Czech Republic</option><option value="DK">Denmark</option><option value="DJ">Djibouti</option><option value="DM">Dominica</option><option value="DO">Dominican Republic</option><option value="EC">Ecuador</option><option value="EG">Egypt</option><option value="SV">El Salvador</option><option value="GQ">Equatorial Guinea</option><option value="ER">Eritrea</option><option value="EE">Estonia</option><option value="ET">Ethiopia</option><option value="FK">Falkland Islands</option><option value="FO">Faroe Islands</option><option value="FJ">Fiji</option><option value="FI">Finland</option><option value="FR">France</option><option value="GF">French Guiana</option><option value="PF">French Polynesia</option><option value="TF">French Southern Terr.</option><option value="GA">Gabon</option><option value="GM">Gambia</option><option value="GE">Georgia</option><option value="DE">Germany</option><option value="GH">Ghana</option><option value="GI">Gibraltar</option><option value="GB">United Kingdom</option><option value="GR">Greece</option><option value="GL">Greenland</option><option value="GD">Grenada</option><option value="GP">Guadeloupe</option><option value="GU">Guam</option><option value="GT">Guatemala</option><option value="GN">Guinea</option><option value="GW">Guinea-Bissau</option><option value="GY">Guyana</option><option value="HT">Haiti</option><option value="HM">Heard/McDonald Isls.</option><option value="HN">Honduras</option><option value="HK">Hong Kong</option><option value="HU">Hungary</option><option value="IS">Iceland</option><option value="IN">India</option><option value="ID">Indonesia</option><option value="IR">Iran</option><option value="IQ">Iraq</option><option value="IE">Ireland</option><option value="IL">Israel</option><option value="IT">Italy</option><option value="JM">Jamaica</option><option value="JP">Japan</option><option value="JO">Jordan</option><option value="KZ">Kazakhstan</option><option value="KE">Kenya</option><option value="KI">Kiribati</option><option value="KP">Korea (North)</option><option value="KR">Korea (South)</option><option value="KW">Kuwait</option><option value="KG">Kyrgyzstan</option><option value="LA">Laos</option><option value="LV">Latvia</option><option value="LB">Lebanon</option><option value="LS">Lesotho</option><option value="LR">Liberia</option><option value="LY">Libya</option><option value="LI">Liechtenstein</option><option value="LT">Lithuania</option><option value="LU">Luxembourg</option><option value="MO">Macau</option><option value="MK">Macedonia</option><option value="MG">Madagascar</option><option value="MW">Malawi</option><option value="MY">Malaysia</option><option value="MV">Maldives</option><option value="ML">Mali</option><option value="MT">Malta</option><option value="MH">Marshall Islands</option><option value="MQ">Martinique</option><option value="MR">Mauritania</option><option value="MU">Mauritius</option><option value="YT">Mayotte</option><option value="MX">Mexico</option><option value="FM">Micronesia</option><option value="MD">Moldova</option><option value="MC">Monaco</option><option value="MN">Mongolia</option><option value="MS">Montserrat</option><option value="MA">Morocco</option><option value="MZ">Mozambique</option><option value="MM">Myanmar</option><option value="MP">N. Mariana Isls.</option><option value="NA">Namibia</option><option value="NR">Nauru</option><option value="NP">Nepal</option><option value="NL">Netherlands</option><option value="AN">Netherlands Antilles</option><option value="NC">New Caledonia</option><option value="NZ">New Zealand</option><option value="NI">Nicaragua</option><option value="NE">Niger</option><option value="NG">Nigeria</option><option value="NU">Niue</option><option value="NF">Norfolk Island</option><option value="NO">Norway</option><option value="OM">Oman</option><option value="PK">Pakistan</option><option value="PW">Palau</option><option value="PS">Palestinian Territory, Occupied</option><option value="PA">Panama</option><option value="PG">Papua New Guinea</option><option value="PY">Paraguay</option><option value="PE">Peru</option><option value="PH">Philippines</option><option value="PN">Pitcairn</option><option value="PL">Poland</option><option value="PT">Portugal</option><option value="PR">Puerto Rico</option><option value="QA">Qatar</option><option value="RE">Reunion</option><option value="RO">Romania</option><option value="RU">Russian Federation</option><option value="RW">Rwanda</option><option value="KN">Saint Kitts and Nevis</option><option value="LC">Saint Lucia</option><option value="WS">Samoa</option><option value="SM">San Marino</option><option value="ST">Sao Tome/Principe</option><option value="SA">Saudi Arabia</option><option value="SN">Senegal</option><option value="CS">Serbia and Montenegro</option><option value="SC">Seychelles</option><option value="SL">Sierra Leone</option><option value="SG">Singapore</option><option value="SK">Slovak Republic</option><option value="SI">Slovenia</option><option value="SB">Solomon Islands</option><option value="SO">Somalia</option><option value="ZA">South Africa</option><option value="ES">Spain</option><option value="LK">Sri Lanka</option><option value="SH">St. Helena</option><option value="PM">St. Pierre and Miquelon</option><option value="VC">St. Vincent and Grenadines</option><option value="SD">Sudan</option><option value="SR">Suriname</option><option value="SJ">Svalbard/Jan Mayen Isls.</option><option value="SZ">Swaziland</option><option value="SE">Sweden</option><option value="CH">Switzerland</option><option value="SY">Syria</option><option value="TW">Taiwan</option><option value="TJ">Tajikistan</option><option value="TZ">Tanzania</option><option value="TH">Thailand</option><option value="TL">Timor-Leste</option><option value="TG">Togo</option><option value="TK">Tokelau</option><option value="TO">Tonga</option><option value="TT">Trinidad and Tobago</option><option value="TN">Tunisia</option><option value="TR">Turkey</option><option value="TM">Turkmenistan</option><option value="TC">Turks/Caicos Isls.</option><option value="TV">Tuvalu</option><option value="UG">Uganda</option><option value="UA">Ukraine</option><option value="AE">United Arab Emirates</option><option value="US">United States</option><option value="UM">US Minor Outlying Is.</option><option value="UY">Uruguay</option><option value="UZ">Uzbekistan</option><option value="VU">Vanuatu</option><option value="VA">Vatican City</option><option value="VE">Venezuela</option><option value="VN">Viet Nam</option><option value="VG">Virgin Islands (British)</option><option value="VI">Virgin Islands (U.S.)</option><option value="WF">Wallis/Futuna Isls.</option><option value="EH">Western Sahara</option><option value="YE">Yemen</option><option value="ZM">Zambia</option><option value="ZW">Zimbabwe</option>
-        </select>
-      </div>
-    </div>
-  
-    <h2>Request Type</h2>
-    <div class="form-group" ng-class="{ 'has-error' : submitted && projectForm.requestType.$invalid }">
-      <label mean-token="'create-requestType'" class="col-md-3 control-label">Request Type</label>
-      <div class="col-md-9">
-        <select name="requestType" type="text" class="form-control" data-ng-model="requestType" id="requestType" required>
-          <option selected="selected" value="">Please select</option>
-          <option value="Marketing: Web">Marketing: Web</option>
-          <option value="Marketing: Creative">Marketing: Creative</option>
-          <option value="Marketing: Media">Marketing: Media</option>
-          <option value="Marketing: Photo/Video">Marketing: Photo/Video</option>
-          <option value="Marketing: Events">Marketing: Events</option>
-          <option value="Marketing: Social Media">Marketing: Social Media</option>
-          <option value="Marketing: Global">Marketing: Global</option>
-          <option value="Sales">Sales</option>
-        </select>
-        <div ng-show="submitted && projectForm.requestType.$invalid" class="help-block">
-          <p ng-show="projectForm.requestType.$error.required">Please select an request type</p>
-        </div>
-      </div>
+      <div class="clearfix"></div>
     </div>
     
-    <h2>Project Information</h2>
-    <div class="form-group" ng-class="{ 'has-error' : submitted && projectForm.projectName.$invalid }">
-      <label mean-token="'create-projectName'" class="col-md-3 control-label">Project Name</label>
-      <div class="col-md-9">
-        <input name="projectName" type="text" class="form-control" data-ng-model="projectName" id="projectName" placeholder="Project Name" required>
-        <div ng-show="submitted && projectForm.projectName.$invalid" class="help-block">
-          <p ng-show="projectForm.projectName.$error.required">Project name is required</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="form-group" ng-class="{ 'has-error' : submitted && projectForm.projectDetails.$invalid }">
-      <label mean-token="'create-projectDetails'" class="col-md-3 control-label">Project Details</label>
-      <div class="col-md-9">
-        <textarea name="projectDetails" type="text" cols="30" rows="10" class="form-control" data-ng-model="projectDetails" id="projectDetails" placeholder="Explain your project needs here." required></textarea>
-        <div ng-show="submitted && projectForm.projectDetails.$invalid" class="help-block">
-          <p ng-show="projectForm.projectDetails.$error.required">Project details are required</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="form-group" >
-      <label mean-token="'create-projectAudience'" class="col-md-3 control-label">What audience are you trying to reach?</label>
-      <div class="col-md-9">
-        <input name="projectAudience" type="text" class="form-control" data-ng-model="projectAudience" id="projectAudience" placeholder="EX: Clients, Providers, MSMs">
-      </div>
-    </div>
-
-    <div class="form-group" >
-      <label mean-token="'create-projectMessage'" class="col-md-3 control-label">What is the primary message you would like conveyed?</label>
-      <div class="col-md-9">
-        <input name="projectMessage" type="text" class="form-control" data-ng-model="projectMessage" id="projectMessage" placeholder="EX: Safe Sex, Aids is a Civil Rights Issue">
-      </div>
-    </div>
-
-    <div class="form-group" ng-class="{ 'has-error' : submitted && projectForm.completionDate.$invalid }">
-      <label mean-token="'create-completionDate'" class="col-md-3 control-label">Requested Completion Date</label>
-      <div class="col-md-9">
-        <input name="completionDate" type="text" class="form-control" data-ng-model="completionDate" id="completionDate" placeholder="mm/dd/yyyy" required>
-        <div ng-show="submitted && projectForm.completionDate.$invalid" class="help-block">
-          <p ng-show="projectForm.completionDate.$error.required">Completion date is required</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="form-group" ng-class="{ 'has-error' : submitted && projectForm.departmentHeadApproving.$invalid }">
-      <label mean-token="'create-departmentHeadApproving'" class="col-md-3 control-label">Department Head</label>
-      <div class="col-md-9">
-        <input name="departmentHeadApproving" type="text" class="form-control" data-ng-model="departmentHeadApproving" id="departmentHeadApproving" placeholder="The name of the department head approving this project" required>
-        <div ng-show="submitted && projectForm.departmentHeadApproving.$invalid" class="help-block">
-          <p ng-show="projectForm.departmentHeadApproving.$error.required">Department head approving this project is required</p>
-        </div>
-      </div>
-    </div>
-
+    <hr>
     <div class="form-group">
-      <div class="col-md-offset-3 col-md-9">
-        <button type="submit" class="btn btn-info">Submit</button>
+      <div class="col-md-offset-4 col-md-4">
+        <button type="submit" class="btn btn-info btn-block">Submit</button>
       </div>
     </div>
   </form>
+
+
+  
 </section>

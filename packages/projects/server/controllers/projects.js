@@ -29,7 +29,7 @@ exports.create = function(req, res) {
 
   project.save(function(err) {
     if (err) {
-      return res.json(500, {
+      return res.status(500).json({
         error: 'Cannot save the project'
       });
     }

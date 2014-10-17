@@ -8,8 +8,16 @@
         <h2>Sign Up</h2>
 
         <div class="input-wrapper">
-            <input required id="name" type="text" name="name" placeholder="Full Name"
-                   ng-model="user.name">
+            <input required id="nameFirst" type="text" name="nameFirst" placeholder="First Name"
+                   ng-model="user.name.first">
+
+            <div class="error_message">Please enter a correct info #</div>
+            <span class="pic user"></span>
+        </div>
+
+        <div class="input-wrapper">
+            <input required id="nameLast" type="text" name="nameLast" placeholder="Last Name"
+                   ng-model="user.name.last">
 
             <div class="error_message">Please enter a correct info #</div>
             <span class="pic user"></span>

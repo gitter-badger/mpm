@@ -8,10 +8,11 @@
 		</div>
 	</form>
 	</p>
-	<p data-ng-hide="edit === 2">Name: <strong>{{user.name}}</strong><a class="btn" href data-ng-click="edit = 2"><i class="glyphicon glyphicon-edit"></i></a>
+	<p data-ng-hide="edit === 2">Name: <strong>{{user.name.first}} {{user.name.last}}</strong><a class="btn" href data-ng-click="edit = 2"><i class="glyphicon glyphicon-edit"></i></a>
 	<form data-ng-show="edit === 2" data-ng-submit="update()">
 		<div class="input-wrapper">
-		<input type="text" name="name" placeholder="name" ng-model="user.name">
+		<input type="text" name="nameFirst" placeholder="First Name" ng-model="user.name.first">
+		<input type="text" name="nameLast" placeholder="Last Name" ng-model="user.name.last">
 		<button data-ng-click="edit = 0" type="submit">Submit</button>
 		</div>
 	</form>
@@ -36,10 +37,4 @@
 		</div>
 	</form>
 	</p>
-	<ul>
-	<li data-ng-repeat="user in users">
-		{{user.username}}
-		{{user.email}}
-	</li>
-	</ul>
 </div>
