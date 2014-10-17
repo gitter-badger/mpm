@@ -103,7 +103,7 @@
     <div class="itemCtrl" data-ng-controller="ModalController">
       <div class="row">
         <div class="col-md-offset-4 col-md-4">
-          <alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}{{alert.kind}}</alert>
+          <alert ng-repeat="alert in alerts" type="{{alert.type}}" close="closeAlert($index)">{{alert.msg}}</alert>
           <div class="row">
             <div class="col-md-offset-2 col-md-8">
               <div class="btn-group" dropdown is-open="status.isopen" on-toggle="toggled(open)">

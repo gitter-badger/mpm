@@ -400,6 +400,14 @@ angular.module('mean.projects').controller('ProjectsController', ['$scope', '$st
     };
 
     $scope.open = function(theTemplate, item) {
+      if($scope.modalType === null) {
+        $scope.modalType = {name: item.subType, template: item.template, department: item.itemType};    
+      }
+
+      if(item !== null) {
+        $scope.openItem = item;
+        $scope.oldContent = angular.copy(item);
+      } 
 
       var modalInstance = $modal.open({
       templateUrl: theTemplate,
@@ -409,92 +417,90 @@ angular.module('mean.projects').controller('ProjectsController', ['$scope', '$st
       resolve: {
         items: function () {
           return $scope.items;
-        },
-        modaltype: function()  {
-          if($scope.modalType !== null) {
-          return $scope.modalType;
-          } else {
-            $scope.modalType = {name: item.subType, template: item.template, department: item.itemType};
-            return $scope.modalType;
-          }
-        },
-        openItem: function()  {
-          if(item !== null) return item;
         }
       }
 
     });
-    $scope.modalType = null; 
 
-    modalInstance.result.then(function (selectedItem) {
-      $scope.selected = selectedItem;
-    }, function () {
-      $log.info('Modal dismissed at: ' + new Date());
-    });
+    modalInstance.result.then(function (item) {
+      $scope.newItem = item;
+      $scope.newItem.itemType = $scope.modalType.department;
+      $scope.newItem.subType = $scope.modalType.name;
+      $scope.newItem.template = $scope.modalType.template;
+      $scope.newItem.remove = function($index) {
+        if(confirm('Are you sure you want to remove this item from your project?') === true)  {
+          $scope.allProjectItems.items.splice($index, 1);
+          $scope.allProjectItems.count = $scope.allProjectItems.count - 1;
+        }
+      };
 
-    };
-  }
-]).controller('ModalInstanceCtrl', ['$scope', '$stateParams', '$location', 'Global', 'Projects', '$http', '$modalInstance', 'items', 'modaltype', 'openItem',
-  function($scope, $stateParams, $location, Global, Projects, $http, $modalInstance, items, modaltype, openItem){
-    $scope.items = items;
-
-    $scope.oldContent = angular.copy(openItem);
-
-    $scope.ok = function () {
-      $modalInstance.close();
-
-      $scope.allProjectItems.count = $scope.allProjectItems.count + 1;
-
+      //if we are editing an item we need to delete and re-write to the object
       for(var a in $scope.allProjectItems.items){
-        if($scope.allProjectItems.items[a].$$hashKey === this.item.$$hashKey){
+        if($scope.allProjectItems.items[a].$$hashKey === item.$$hashKey){
           $scope.allProjectItems.items.splice(a, 1);
           $scope.allProjectItems.count = $scope.allProjectItems.count - 1;
         }
       }
 
-      $scope.newItem = this.item;
-      $scope.newItem.itemType = modaltype.department;
-      $scope.newItem.subType = modaltype.name;
-      $scope.newItem.template = modaltype.template;
-
-      $scope.newItem.remove = function($index) {
-        if(confirm('Are you sure you want to remove this item from your project?') === true)  {
-          $scope.allProjectItems.items.splice($index, 1);
-        }
-      };
-
+      // push the new item to the object and remove any alerts
       $scope.allProjectItems.items.push($scope.newItem);
+      $scope.allProjectItems.count = $scope.allProjectItems.count + 1;
       $scope.removeAlertDuplicate('no-items');
 
+      //if we are editing an item in an existing project
       if($scope.project){
         $scope.projectProgress($scope.project);
         $scope.update(true);
-
-        console.log($scope.project);
       }
-    };
 
-    $scope.saveProgress = function() {
+      //reset modalType
+      $scope.modalType = null;
 
-    };
 
-    $scope.cancel = function () {
-      if(openItem !== null) {
-        if($scope.project.items) {
-          for(var i in $scope.project.items){
-            if($scope.project.items[i].$$hashKey === this.item.$$hashKey){
-              $scope.project.items[i] = $scope.oldContent;
+    }, function () {
+      var cancelObj = {
+        open: $scope.openItem,
+        old: $scope.oldContent
+      };
+
+      $log.info('Modal dismissed at: ' + new Date());
+      $scope.oldContent = cancelObj.old;
+
+      //reset item to state before modal opens
+      if(cancelObj.open !== null) {
+        if($scope.project) {
+            for(var i in $scope.project.items){
+              if($scope.project.items[i].$$hashKey === $scope.openItem.$$hashKey){
+                $scope.project.items[i] = $scope.oldContent;
+              }
             }
-          }
         } else {
           for(var a in $scope.allProjectItems.items){
-            if($scope.allProjectItems.items[a].$$hashKey === this.item.$$hashKey){
+            if($scope.allProjectItems.items[a].$$hashKey === $scope.openItem.$$hashKey){
               $scope.allProjectItems.items[a] = $scope.oldContent;
             }
           }
         }
       }
-      $modalInstance.dismiss('cancel');
+
+      //reset modalType
+      $scope.modalType = null;
+
+    });
+
+    };
+  }
+]).controller('ModalInstanceCtrl', ['$scope', '$stateParams', '$location', 'Global', 'Projects', '$http', '$modalInstance', 'items',
+  function($scope, $stateParams, $location, Global, Projects, $http, $modalInstance, items){
+    $scope.items = items;
+
+
+    $scope.ok = function () {
+      $modalInstance.close(this.item);
+    };
+
+    $scope.cancel = function () {
+      $modalInstance.dismiss();
     };
   }
  ]);
