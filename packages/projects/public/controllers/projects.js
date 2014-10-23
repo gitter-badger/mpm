@@ -501,7 +501,7 @@ angular.module('mean.projects').controller('ProjectsController', ['$scope', '$st
 
             
             $scope.update(true);
-            
+            $scope.findOne();
             //reset form data
             $scope.discussion = {
               subject: '',

@@ -84,7 +84,7 @@
     <div class="col-md-4"><h3>{{item.title}}</h3><h6>{{item.subType}}</h6></div>
     <div class="col-md-7"><h5><div class="col-md-2"><em>Progress:</em></div><div class="col-md-10"><progressbar class="progress-striped active" value="item.progress">{{item.progress}}%</progressbar></div></h5></div>
     <div class="col-md-1" data-ng-controller="ModalController">
-      <span data-ng-if="hasItemAuth(project, item)"><a class="btn" data-ng-click="open(item.template, item)"><i class="glyphicon glyphicon-edit"></i></a></span>
+      <span data-ng-if="hasItemAuth(project, item)"><a class="btn" data-ng-click="open(item.template, 'item', item)"><i class="glyphicon glyphicon-edit"></i></a></span>
     </div>
       <div class="clearfix"></div>
   </div>
@@ -292,21 +292,24 @@
           <div class="padding">
             <h3>{{openDiscussion.subject}}</h3>
             <h6>Created by {{openDiscussion.creator.name.first}} on {{openDiscussion.created | date:'MM/dd/yyyy'}}</h6>
+            <hr>
             <div data-ng-repeat="message in openDiscussion.messages">
-                <h6>{{message.author.name.first}} {{message.author.name.last}}</h6>
-                <span>{{message.content}}</span>
+              <div class="message">
+                <h5><strong>{{message.author.name.first}} {{message.author.name.last}}</strong> - {{message.created | date:'MM/dd/yyyy'}}</h5>
+                <span class="content">{{message.content}}</span>
+              </div>
+              <hr>
             </div>
           </div>
           <form data-ng-submit="ok()">
             <div class="modal-header">
               <div class="row">
-                <div class="col-md-4"><h5 class="modal-title">Post a message</h5></div>
               </div>
             </div>
             <div class="modal-body">
 
                 <div class="form-group">
-                  <label mean-token="'create-discussionMessage'" class="control-label">Message</label>
+                  <label mean-token="'create-discussionMessage'" class="control-label">Post a message</label>
                   <div>
                     <textarea name="discussionMessage" type="text" cols="30" rows="10" class="form-control" data-ng-model="discussion.message.content" id="discussionMessage" placeholder="Type your message here" required></textarea>
                   </div>
