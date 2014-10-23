@@ -371,7 +371,6 @@ angular.module('mean.projects').controller('ProjectsController', ['$scope', '$st
     };
 
     $scope.open = function(theTemplate, type, item) {
-      $scope.findOne();
       
       switch(type){
         case 'item':
