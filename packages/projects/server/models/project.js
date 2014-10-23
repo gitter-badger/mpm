@@ -82,9 +82,11 @@ var ProjectSchema = new Schema({
   items: [{
     title: String,
     progress: {type: Number, default: 0},
+    status: String,
     users: [{
       _id: String,
-      username: String
+      username: String,
+      status: String
     }],
     itemType: String,
     subType: String,
@@ -113,7 +115,33 @@ var ProjectSchema = new Schema({
     text: String,
     userId: String,
     username: String,
-    status: String
+    viewed: Boolean
+  }],
+  discussions: [{
+    subject: String,
+    creator: {
+      name: {
+        first: String,
+        last: String
+      },
+      username: String,
+      _id: String
+    },
+    created: Date,
+    projectItem: String,
+    messageCount: Number,
+    messages: [{
+      content: String,
+      author: {
+        name: {
+          first: String,
+          last: String
+        },
+        username: String,
+        _id: String
+      },
+      created: Date
+    }]
   }],
   user: {
     type: Schema.ObjectId,

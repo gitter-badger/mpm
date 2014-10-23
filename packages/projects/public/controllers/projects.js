@@ -2,6 +2,7 @@
 
 angular.module('mean.projects').controller('ProjectsController', ['$scope', '$stateParams', '$location', 'Global', 'Projects', '$http',
   function($scope, $stateParams, $location, Global, Projects, $http) {
+    /*jslint plusplus: true */
     $scope.global = Global;
     $scope.allProjectItems = {items: [], count: 0};
 
@@ -21,8 +22,8 @@ angular.module('mean.projects').controller('ProjectsController', ['$scope', '$st
     };
 
     $scope.today = function() {
-    $scope.dt = new Date();
-    $scope.dt.setDate($scope.dt.getDate() + 14);
+      $scope.dt = new Date();
+      $scope.dt.setDate($scope.dt.getDate() + 14);
     };
     $scope.today();
 
@@ -79,7 +80,7 @@ angular.module('mean.projects').controller('ProjectsController', ['$scope', '$st
           $totalprogress = 0,
           $count = 0;
       for(var i in project.items) {
-        $count = $count + 1;
+        $count++;
         $totalprogress = $totalprogress + project.items[i].progress;
         $allProgress.push({item: project.items[i].subType, name: project.items[i].title, value: project.items[i].progress});
       }
@@ -99,13 +100,12 @@ angular.module('mean.projects').controller('ProjectsController', ['$scope', '$st
         $scope.addAlert('danger', 'You are required to submit at least one project Item!', 'no-items');
         return;
       }
-
       //add users to project items
       for(var x in $scope.allProjectItems.items) {
         var $itemUsers = [];
         for(var u in $scope.users) {
           if($scope.users[u].department === $scope.allProjectItems.items[x].itemType) {
-            $itemUsers.push({_id: $scope.users[u]._id, username: $scope.users[u].username});
+            $itemUsers.push({_id: $scope.users[u]._id, username: $scope.users[u].username, status: 'pending'});
           }
         }
         $scope.allProjectItems.items[x].users = $itemUsers;
@@ -152,7 +152,7 @@ angular.module('mean.projects').controller('ProjectsController', ['$scope', '$st
             items: $usersItems,
             userId: $scope.users[i]._id,
             username: $scope.users[i].username,
-            status: 'pending'
+            viewed: false
           };
           $notifications.push($notification);
           
@@ -162,26 +162,6 @@ angular.module('mean.projects').controller('ProjectsController', ['$scope', '$st
         //save project
         project.$save(function(response) {
           $location.path('projects/' + response._id);
-
-          $scope.project = project;
-
-          var $theProject = {title: $scope.project.general.projectName, _id:response._id};
-
-          //update user requested project
-          $scope.user.projects.requested.push($theProject);
-          $http.put('/users/me', {
-              projects: {
-                assigned: $scope.user.projects.assigned,
-                requested: $scope.user.projects.requested
-              }
-          })
-          .success(function(response){
-            $scope.response = response;
-          })
-          .error(function(error){
-            $scope.response = error;
-          });
-
           
         });
 
@@ -190,45 +170,60 @@ angular.module('mean.projects').controller('ProjectsController', ['$scope', '$st
       }
     };
 
-    $scope.accept = function(project){
-      $scope.user.projects.assigned.push({title: project.general.projectName, _id: project._id});
-
-      $http.put('/users/me', {
-              projects: {
-                assigned: $scope.user.projects.assigned,
-                requested: $scope.user.projects.requested
-              }
-          })
-          .success(function(response){
-            $scope.response = response;
-
-            for(var i in $scope.projectNotifications) {
-              if($scope.projectNotifications[i]._id === project._id){
-                $scope.projectNotifications.splice(i, 1);
+    $scope.notification = function(project, action) {
+        $scope.project = project;
+        switch(action) {
+          case 'confirm':
+            for(var x in $scope.project.notifications) {
+              if($scope.project.notifications[x].userId === $scope.global.user._id) {
+                $scope.project.notifications[x].viewed = true;
               }
             }
-
-            for(var x in project.notifications) {
-              if(project.notifications[x].userId === $scope.user._id) {
-                project.notifications[x].status = 'accepted';
-                updateNotifications();
-                $scope.projectsAssigned.push(project);
-              }
-            }
-
-
-          })
-          .error(function(error){
-            $scope.response = error;
-          });
-      var updateNotifications = function(){
-        $http.put('/projects/' + project._id, {
-          notifications: project.notifications
-        })
-        .success(function(response){
-        });
-      };
+            break;
+        }
+        $scope.update(true);
     };
+
+    // $scope.accept = function(project){
+
+    //   $scope.user.projects.assigned.push({title: project.general.projectName, _id: project._id});
+
+    //   $http.put('/users/me', {
+    //           projects: {
+    //             assigned: $scope.user.projects.assigned,
+    //             requested: $scope.user.projects.requested
+    //           }
+    //       })
+    //       .success(function(response){
+    //         $scope.response = response;
+
+    //         for(var i in $scope.projectNotifications) {
+    //           if($scope.projectNotifications[i]._id === project._id){
+    //             $scope.projectNotifications.splice(i, 1);
+    //           }
+    //         }
+
+    //         for(var x in project.notifications) {
+    //           if(project.notifications[x].userId === $scope.user._id) {
+    //             project.notifications[x].status = 'accepted';
+    //             updateNotifications();
+    //             $scope.projectsAssigned.push(project);
+    //           }
+    //         }
+
+
+    //       })
+    //       .error(function(error){
+    //         $scope.response = error;
+    //       });
+    //   var updateNotifications = function(){
+    //     $http.put('/projects/' + project._id, {
+    //       notifications: project.notifications
+    //     })
+    //     .success(function(response){
+    //     });
+    //   };
+    // };
 
     $scope.remove = function(project) {
       if (project) {
@@ -239,22 +234,6 @@ angular.module('mean.projects').controller('ProjectsController', ['$scope', '$st
             $scope.projects.splice(i, 1);
           }
         }
-        for (var x in $scope.user.projects.requested) {
-          if ($scope.user.projects.requested[x]._id === project._id) {
-            $scope.user.projects.requested.splice(x, 1);
-          }
-        }
-        for (var y in $scope.user.projects.assigned) {
-          if ($scope.user.projects.assigned[y]._id === project._id) {
-            $scope.user.projects.assigned.splice(y, 1);
-          }
-        }
-        $http.put('/users/me', {
-              projects: {
-                requested: $scope.user.projects.requested,
-                assigned: $scope.user.projects.assigned
-              }
-        });
 
       } else {
         $scope.project.$remove(function(response) {
@@ -273,7 +252,6 @@ angular.module('mean.projects').controller('ProjectsController', ['$scope', '$st
 
         project.$update(function() {
           $location.path('projects/' + project._id);
-          console.log(project);
         });
       } else {
         $scope.submitted = true;
@@ -287,39 +265,31 @@ angular.module('mean.projects').controller('ProjectsController', ['$scope', '$st
         $scope.projectNotifications = [];
         $scope.projectsAssigned = [];
 
-        //set requested projects to $scope.projectsRequested
-        for(var i in $scope.user.projects.requested) {
-          var reqId = $scope.user.projects.requested[i]._id;
-          
-          for(var x in $scope.projects) {
-            if($scope.projects[x]._id === reqId){
-              $scope.projectsRequested.push($scope.projects[x]);
-            }
-          
-          }
-        }
 
-        //set requested projects to $scope.projectsRequested
-        for(var c in $scope.user.projects.assigned) {
-          var assId = $scope.user.projects.assigned[c]._id;
-          
-          for(var d in $scope.projects) {
-            if($scope.projects[d]._id === assId){
-              $scope.projectsAssigned.push($scope.projects[d]);
-            }
-          
-          }
-        }
+        //set assigned projects to $scope.projectsAssigned
+        for(var d = 0; d < $scope.projects.length; d++) {
 
-        //create list of notifcations from projects for logged in user
-        for(var y in $scope.projects) {
-          for(var z in $scope.projects[y].notifications) {
-            if($scope.projects[y].notifications[z].userId === $scope.user._id && $scope.projects[y].notifications[z].status === 'pending') {
-              $scope.projectNotifications.push($scope.projects[y]);
+          //create list of notifcations from projects for logged in user
+          for(var z in $scope.projects[d].notifications) {
+            if($scope.projects[d].notifications[z].userId === $scope.global.user._id && $scope.projects[d].notifications[z].viewed === false) {
+              $scope.projectNotifications.push($scope.projects[d]);
             }
           }
-        }
 
+          //set assigned projects to $scope.projectsAssigned
+          var isAssigned = false;
+          for(var c in $scope.projects[d].items) {
+              for(var e in $scope.projects[d].items[c].users) {
+                if($scope.projects[d].items[c].users[e]._id === $scope.global.user._id && $scope.projects[d].items[c].users[e].status === 'accepted') {
+                  isAssigned = true;
+                }
+              } 
+          }
+          if(isAssigned === true)$scope.projectsAssigned.push($scope.projects[d]);
+
+          //set requested projects to $scope.projectsRequested
+          if($scope.projects[d].user._id === $scope.global.user._id)$scope.projectsRequested.push($scope.projects[d]);
+        }
 
 
 
@@ -374,6 +344,7 @@ angular.module('mean.projects').controller('ProjectsController', ['$scope', '$st
   }
 ]).controller('ModalController', ['$scope', '$stateParams', '$location', 'Global', 'Projects', '$http', '$modal', '$log',
   function($scope, $stateParams, $location, Global, Projects, $http, $modal, $log) {
+    /*jslint plusplus: true */
     $scope.modalType = null;
     $scope.items = [
       {name: 'Website', template: 'modal-website.html', department: 'Marketing: Web'},
@@ -399,110 +370,231 @@ angular.module('mean.projects').controller('ProjectsController', ['$scope', '$st
       $scope.status.isopen = !$scope.status.isopen;
     };
 
-    $scope.open = function(theTemplate, item) {
-      if($scope.modalType === null) {
-        $scope.modalType = {name: item.subType, template: item.template, department: item.itemType};    
+    $scope.open = function(theTemplate, type, item) {
+      
+      switch(type){
+        case 'item':
+          console.log('opening item modal');
+
+          if($scope.modalType === null) {
+            $scope.modalType = {name: item.subType, template: item.template, department: item.itemType};    
+          }
+
+          if(item !== null) {
+            $scope.openItem = item;
+            $scope.oldContent = angular.copy(item);
+          }
+        break;
+
+        case 'discussion':
+        console.log('opening discussion modal');
+          if(item !== 'new') {
+            $scope.openDiscussion = item;
+          }
+        break;
       }
 
-      if(item !== null) {
-        $scope.openItem = item;
-        $scope.oldContent = angular.copy(item);
-      } 
-
-      var modalInstance = $modal.open({
-      templateUrl: theTemplate,
-      controller: 'ModalInstanceCtrl',
-      size: 'lg',
-      scope: $scope,
-      resolve: {
-        items: function () {
-          return $scope.items;
-        }
-      }
-
-    });
-
-    modalInstance.result.then(function (item) {
-      $scope.newItem = item;
-      $scope.newItem.itemType = $scope.modalType.department;
-      $scope.newItem.subType = $scope.modalType.name;
-      $scope.newItem.template = $scope.modalType.template;
-      $scope.newItem.remove = function($index) {
-        if(confirm('Are you sure you want to remove this item from your project?') === true)  {
-          $scope.allProjectItems.items.splice($index, 1);
-          $scope.allProjectItems.count = $scope.allProjectItems.count - 1;
-        }
-      };
-
-      //if we are editing an item we need to delete and re-write to the object
-      for(var a in $scope.allProjectItems.items){
-        if($scope.allProjectItems.items[a].$$hashKey === item.$$hashKey){
-          $scope.allProjectItems.items.splice(a, 1);
-          $scope.allProjectItems.count = $scope.allProjectItems.count - 1;
-        }
-      }
-
-      // push the new item to the object and remove any alerts
-      $scope.allProjectItems.items.push($scope.newItem);
-      $scope.allProjectItems.count = $scope.allProjectItems.count + 1;
-      $scope.removeAlertDuplicate('no-items');
-
-      //if we are editing an item in an existing project
-      if($scope.project){
-        $scope.projectProgress($scope.project);
-        $scope.update(true);
-      }
-
-      //reset modalType
-      $scope.modalType = null;
-
-
-    }, function () {
-      var cancelObj = {
-        open: $scope.openItem,
-        old: $scope.oldContent
-      };
-
-      $log.info('Modal dismissed at: ' + new Date());
-      $scope.oldContent = cancelObj.old;
-
-      //reset item to state before modal opens
-      if(cancelObj.open !== null) {
-        if($scope.project) {
-            for(var i in $scope.project.items){
-              if($scope.project.items[i].$$hashKey === $scope.openItem.$$hashKey){
-                $scope.project.items[i] = $scope.oldContent;
-              }
-            }
-        } else {
-          for(var a in $scope.allProjectItems.items){
-            if($scope.allProjectItems.items[a].$$hashKey === $scope.openItem.$$hashKey){
-              $scope.allProjectItems.items[a] = $scope.oldContent;
-            }
+        var modalInstance = $modal.open({
+        templateUrl: theTemplate,
+        controller: 'ModalInstanceCtrl',
+        size: 'lg',
+        scope: $scope,
+        resolve: {
+          items: function () {
+            return $scope.items;
+          },
+          type: function() {
+            return type;
           }
         }
-      }
 
-      //reset modalType
-      $scope.modalType = null;
+      });
 
-    });
+      modalInstance.result.then(function (item) {
+        switch(type){
+          case 'item':
+            $scope.newItem = item;
+            $scope.newItem.itemType = $scope.modalType.department;
+            $scope.newItem.subType = $scope.modalType.name;
+            $scope.newItem.template = $scope.modalType.template;
 
+            $scope.newItem.remove = function($index) {
+              if(confirm('Are you sure you want to remove this item from your project?') === true)  {
+                $scope.allProjectItems.items.splice($index, 1);
+                $scope.allProjectItems.count--;
+              }
+            };
+
+            //if we are editing an item we need to delete and re-write to the object
+            for(var a in $scope.allProjectItems.items){
+              if($scope.allProjectItems.items[a].$$hashKey === item.$$hashKey){
+                $scope.allProjectItems.items.splice(a, 1);
+                $scope.allProjectItems.count--;
+              }
+            }
+
+            // push the new item to the object and remove any alerts
+            $scope.allProjectItems.items.push($scope.newItem);
+            $scope.allProjectItems.count++;
+            $scope.removeAlertDuplicate('no-items');
+
+            //if we are editing an item in an existing project
+            if($scope.project){
+              $scope.projectProgress($scope.project);
+              $scope.update(true);
+            }
+
+            //reset modalType
+            $scope.modalType = null;
+          break;
+
+          case 'discussion':
+            
+            $scope.discussion = item;
+
+            if ($scope.openDiscussion){
+              console.log('existing');
+              $scope.openDiscussion.messages.push({
+                author: {
+                  name: {
+                    first: $scope.global.user.name.first,
+                    last: $scope.global.user.name.last
+                  },
+                  username: $scope.global.user.username,
+                  _id: $scope.global.user._id
+                },
+                content: $scope.discussion.message.content,
+                created: new Date()
+              });
+              for(var x in $scope.project.discussions){
+                if($scope.project.discussions[x] === item){
+                  $scope.project.discussions.splice(x, 1, $scope.openDiscussion); 
+                }
+              }
+            } else{
+              console.log('not existing');
+              $scope.discussion.created = new Date();
+              $scope.discussion.creator = {
+                name: {
+                  first: $scope.global.user.name.first,
+                  last: $scope.global.user.name.last
+                },
+                username: $scope.global.user.username,
+                _id: $scope.global.user._id
+              };
+              $scope.discussion.messages = [];
+              $scope.discussion.messages.push({
+                author: {
+                  name: {
+                    first: $scope.global.user.name.first,
+                    last: $scope.global.user.name.last
+                  },
+                  username: $scope.global.user.username,
+                  _id: $scope.global.user._id
+                },
+                content: $scope.discussion.message.content,
+                created: new Date()
+              });
+
+              $scope.project.discussions.push($scope.discussion);
+            }
+
+            
+            $scope.update(true);
+            
+            //reset form data
+            $scope.discussion = {
+              subject: '',
+              message: {
+                content: ''
+              }
+            };
+
+            $scope.openDiscussion = false;
+
+
+          break; // end case discussion
+
+        } // end switch
+
+      }, function (type) {
+        switch(type){
+          case 'item':
+            console.log('canceling item');
+            var cancelObj = {
+              open: $scope.openItem,
+              old: $scope.oldContent
+            };
+
+            $log.info('Modal dismissed at: ' + new Date());
+            $scope.oldContent = cancelObj.old;
+
+            //reset item to state before modal opens
+            if(cancelObj.open !== null) {
+              if($scope.project) {
+                  for(var i in $scope.project.items){
+                    if($scope.project.items[i].$$hashKey === $scope.openItem.$$hashKey){
+                      $scope.project.items[i] = $scope.oldContent;
+                    }
+                  }
+              } else {
+                for(var a in $scope.allProjectItems.items){
+                  if($scope.allProjectItems.items[a].$$hashKey === $scope.openItem.$$hashKey){
+                    $scope.allProjectItems.items[a] = $scope.oldContent;
+                  }
+                }
+              }
+            }
+            $scope.modalType = null;//reset modalType
+
+          break; // end case item
+
+          case 'discussion':
+            
+            //reset form data
+            $scope.discussion = {
+              subject: '',
+              message: {
+                content: ''
+              }
+            };
+
+            $scope.openDiscussion = false;
+
+
+          break; // end case discussion
+
+        } // end switch
+
+      });
+
+      
+      
     };
   }
-]).controller('ModalInstanceCtrl', ['$scope', '$stateParams', '$location', 'Global', 'Projects', '$http', '$modalInstance', 'items',
-  function($scope, $stateParams, $location, Global, Projects, $http, $modalInstance, items){
+]).controller('ModalInstanceCtrl', ['$scope', '$stateParams', '$location', 'Global', 'Projects', '$http', '$modalInstance', 'items', 'type',
+  function($scope, $stateParams, $location, Global, Projects, $http, $modalInstance, items, type){
     $scope.items = items;
 
-
-    $scope.ok = function () {
-      $modalInstance.close(this.item);
-    };
+    if(type === 'item'){
+      $scope.ok = function () {
+        $modalInstance.close(this.item);
+      };
+    }
+    if(type === 'discussion'){
+      $scope.ok = function () {
+        $modalInstance.close(this.discussion);
+      };
+    }
 
     $scope.cancel = function () {
-      $modalInstance.dismiss();
+      $modalInstance.dismiss(type);
     };
   }
+ ]).controller('DiscussionController', ['$scope', '$stateParams', '$location', 'Global', 'Projects', '$http',
+   function($scope, $stateParams, $location, Global, Projects, $http) {
+    console.log('discussion controller activated');
+   }
  ]);
 
 

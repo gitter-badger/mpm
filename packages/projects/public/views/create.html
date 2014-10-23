@@ -117,7 +117,7 @@
                   </li>
                 </ul>
               </div>
-              <a class="btn btn-default" ng-click="open(modalType.template)">Add +</a>
+              <a class="btn btn-default" ng-click="open(modalType.template, 'item')">Add +</a>
             </div>
           </div>
         </div>
@@ -281,7 +281,7 @@
       <div class="col-md-4"><h5><em>Title:</em> {{item.title}}</h5></div>
       <div class="col-md-4"><h5><em>Description:</em> {{item.description}}</h5></div>
       <div class="col-md-2" data-ng-controller="ModalController">
-        <span><a class="btn" data-ng-click="open(item.template, item)"><i class="glyphicon glyphicon-edit"></i></a></span>
+        <span><a class="btn" data-ng-click="open(item.template, 'item', item)"><i class="glyphicon glyphicon-edit"></i></a></span>
         <span><a class="btn" data-ng-click="item.remove($index)"><i class="glyphicon glyphicon-trash"></i></a></span>
       </div>
       <div class="clearfix"></div>

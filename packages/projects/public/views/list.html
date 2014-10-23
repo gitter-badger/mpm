@@ -18,9 +18,6 @@
       <td><progressbar class="progress-striped active" type="success" value="project.progresstotal">{{project.progresstotal}}%</progressbar></td>
       <td>
         <span data-ng-if="hasAuthorization(project)">
-          <a class="btn" href="/#!/projects/{{project._id}}/edit">
-            <i class="glyphicon glyphicon-edit"></i>
-          </a>
           <a class="btn" data-ng-click="remove(project);">
             <i class="glyphicon glyphicon-trash"></i>
           </a>
@@ -36,15 +33,6 @@
       <td>{{project.user.name.first}} {{project.user.name.last}}</td>
       <td>{{project.requestType}}</td>
       <td><progressbar class="progress-striped active" type="success" value="project.progresstotal">{{project.progresstotal}}%</progressbar></td>
-      <td>
-        <span data-ng-if="hasAuthorization(project)">
-          <a class="btn" href="/#!/projects/{{project._id}}/edit">
-            <i class="glyphicon glyphicon-edit"></i>
-          </a>
-          <a class="btn" data-ng-click="remove(project);">
-            <i class="glyphicon glyphicon-trash"></i>
-          </a>
-        </span></td>
     </tr>
     </tbody>
 
@@ -56,15 +44,6 @@
       <td>{{project.user.name.first}} {{project.user.name.last}}</td>
       <td>{{project.requestType}}</td>
       <td><progressbar class="progress-striped active" type="success" value="project.progresstotal">{{project.progresstotal}}%</progressbar></td>
-      <td>
-        <span data-ng-if="hasAuthorization(project)">
-          <a class="btn" href="/#!/projects/{{project._id}}/edit">
-            <i class="glyphicon glyphicon-edit"></i>
-          </a>
-          <a class="btn" data-ng-click="remove(project);">
-            <i class="glyphicon glyphicon-trash"></i>
-          </a>
-        </span></td>
     </tr>
     </tbody>
   </table>
@@ -85,7 +64,7 @@
         <td>{{project.created  | date:'MM/dd/yyyy'}}</td>
         <td>{{project.general.completionDate  | date:'MM/dd/yyyy'}}</td>
         <td>{{project.user.name.first}} {{project.user.name.last}}</td>
-        <td><button class="btn btn-info" data-ng-click="accept(project);">Accept</button></td>
+        <td><a class="btn btn-info" href="/#!/projects/{{project._id}}" data-ng-click="notification(project, 'confirm')">Confirm</a></td>
       </tr>
     </tbody>
   </table>

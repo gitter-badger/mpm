@@ -104,6 +104,10 @@ footer p {
 .edit-progress{
     margin-top:8px;
 }
+
+.padding{
+    padding:20px;
+}
 /*.ng-invalid.ng-dirty{*/
     /*border-color:#FA787E;*/
 /*}*/
