@@ -371,6 +371,7 @@ angular.module('mean.projects').controller('ProjectsController', ['$scope', '$st
     };
 
     $scope.open = function(theTemplate, type, item) {
+      $scope.findOne();
       
       switch(type){
         case 'item':
@@ -501,7 +502,6 @@ angular.module('mean.projects').controller('ProjectsController', ['$scope', '$st
 
             
             $scope.update(true);
-            $scope.findOne();
             //reset form data
             $scope.discussion = {
               subject: '',
