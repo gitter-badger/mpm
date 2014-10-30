@@ -148,14 +148,15 @@ angular.module('mean.projects').controller('ProjectsController', ['$scope', '$st
               }); 
             }
           }
-          var $notification = {
-            items: $usersItems,
-            userId: $scope.users[i]._id,
-            username: $scope.users[i].username,
-            viewed: false
-          };
-          $notifications.push($notification);
-          
+          if($usersItems.length >= 1){
+            var $notification = {
+              items: $usersItems,
+              userId: $scope.users[i]._id,
+              username: $scope.users[i].username,
+              viewed: false
+            };
+            $notifications.push($notification);
+          }   
         }
         project.notifications = $notifications;
 
@@ -346,11 +347,21 @@ angular.module('mean.projects').controller('ProjectsController', ['$scope', '$st
   function($scope, $stateParams, $location, Global, Projects, $http, $modal, $log) {
     /*jslint plusplus: true */
     $scope.modalType = null;
-    $scope.items = [
-      {name: 'Website', template: 'modal-website.html', department: 'Marketing: Web'},
-      {name: 'Splash Page', template: 'modal-splashpage.html', department: 'Marketing: Web'},
-      {name: 'Site Update', template: 'modal-siteupdate.html', department: 'Marketing: Web'}
-    ];
+    $scope.items = {
+      web: [
+        {name: 'Website', template: 'modal-website.html', department: 'Marketing: Web'},
+        {name: 'Splash Page', template: 'modal-splashpage.html', department: 'Marketing: Web'},
+        {name: 'Site Update', template: 'modal-siteupdate.html', department: 'Marketing: Web'}
+      ], 
+      creative: [
+        {name: 'Artwork', template: 'modal-artwork.html', department: 'Marketing: Creative'},
+        {name: 'Flyer/Palm Card', template: 'modal-flyerpalmcard.html', department: 'Marketing: Creative'},
+        {name: 'Postcard Mailer', template: 'modal-postcardmailer.html', department: 'Marketing: Creative'},
+        {name: 'Vinyl Banner', template: 'modal-vinylbanner.html', department: 'Marketing: Creative'},
+        {name: 'Signage', template: 'modal-signage.html', department: 'Marketing: Creative'},
+        {name: 'Poster', template: 'modal-poster.html', department: 'Marketing: Creative'}
+      ]
+    };
 
     $scope.status = {
       isopen: false
@@ -590,10 +601,6 @@ angular.module('mean.projects').controller('ProjectsController', ['$scope', '$st
       $modalInstance.dismiss(type);
     };
   }
- ]).controller('DiscussionController', ['$scope', '$stateParams', '$location', 'Global', 'Projects', '$http',
-   function($scope, $stateParams, $location, Global, Projects, $http) {
-    console.log('discussion controller activated');
-   }
  ]);
 
 

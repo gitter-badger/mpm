@@ -112,7 +112,16 @@
                   <span data-ng-show="modalType !== null">{{modalType.name}} <span class="caret"></span></span>
                 </button>
                 <ul class="dropdown-menu" role="menu">
-                  <li data-ng-repeat="choice in items">
+                  <li class="divider"></li>
+                  <p class="text-center"><i>Marketing: Web</i></p>
+                  <li class="divider"></li>
+                  <li data-ng-repeat="choice in items.web">
+                    <a ng-click="choose(choice.name, choice.template, choice.department)">{{choice.name}}</a>
+                  </li>
+                  <li class="divider"></li>
+                  <p class="text-center"><i>Marketing: Creative</i></p>
+                  <li class="divider"></li>
+                  <li data-ng-repeat="choice in items.creative">
                     <a ng-click="choose(choice.name, choice.template, choice.department)">{{choice.name}}</a>
                   </li>
                 </ul>
@@ -266,6 +275,105 @@
                 <label mean-token="'create-itemContent'" class="control-label">Site Content</label>
                 <div>
                   <textarea name="itemContent" type="text" cols="30" rows="10" class="form-control" data-ng-model="item.content" id="itemContent" placeholder="Please provide content/copy for project item. Ex: about page text, contact page info" required></textarea>
+                </div>
+              </div>
+          </div>
+          <div class="modal-footer">
+              <a class="btn btn-warning" href data-ng-click="cancel()">Cancel</a><button class="btn btn-primary">Save</button>
+          </div>
+        </form>
+      </script>
+
+
+      <script type="text/ng-template" id="modal-artwork.html">
+        <form data-ng-submit="ok()">
+          <div class="modal-header">
+              <h3 class="modal-title">Artwork</h3>
+          </div>
+          <div class="modal-body">
+              <div class="form-group">
+                <label mean-token="'create-itemTitle'" class="control-label">Title</label>
+                <div>
+                  <input name="itemTitle" type="text" class="form-control" data-ng-model="item.title" id="itemTitle" placeholder="ex: Pharmacy Website" required>
+                </div>
+              </div>
+            
+              <div class="form-group">
+                <label mean-token="'create-itemBusinessLine'" class="control-label">Business Line</label>
+                <div>
+                  <input name="itemBusinessLine" type="text" class="form-control" data-ng-model="item.businessLine" id="itemBusinessLine" placeholder="ex: Positive Healthcare, OTC, FreeHivTest.net" required>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label mean-token="'create-itemDescription'" class="control-label">Description</label>
+                <div>
+                  <textarea name="itemDescription" type="text" cols="30" rows="10" class="form-control" data-ng-model="item.description" id="itemDescription" placeholder="Please provide a description of the project item" required></textarea>
+                </div>
+              </div>
+
+
+              <div class="form-group">
+                <label mean-token="'create-itemAudience'" class="control-label">Audience</label>
+                <div>
+                  <textarea name="itemAudience" type="text" cols="30" rows="10" class="form-control" data-ng-model="item.audience" id="itemAudience" placeholder="Describe the audience that will view the artwork" required></textarea>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label mean-token="'create-itemMessage'" class="control-label">Message</label>
+                <div>
+                  <textarea name="itemMessage" type="text" cols="30" rows="10" class="form-control" data-ng-model="item.message" id="itemMessage" placeholder="Describe the message you would like to convey to the audience" required></textarea>
+                </div>
+              </div>
+          </div>
+          <div class="modal-footer">
+              <a class="btn btn-warning" href data-ng-click="cancel()">Cancel</a><button class="btn btn-primary">Save</button>
+          </div>
+        </form>
+      </script>
+
+
+      <script type="text/ng-template" id="modal-flyerpalmcard.html">
+        <form data-ng-submit="ok()">
+          <div class="modal-header">
+              <h3 class="modal-title">Flyer/Palm Card</h3>
+          </div>
+          <div class="modal-body">
+              <div class="form-group">
+                <label mean-token="'create-itemTitle'" class="control-label">Title</label>
+                <div>
+                  <input name="itemTitle" type="text" class="form-control" data-ng-model="item.title" id="itemTitle" placeholder="ex: Pharmacy Website" required>
+                </div>
+              </div>
+            
+              <div class="form-group">
+                <label mean-token="'create-itemBusinessLine'" class="control-label">Business Line</label>
+                <div>
+                  <input name="itemBusinessLine" type="text" class="form-control" data-ng-model="item.businessLine" id="itemBusinessLine" placeholder="ex: Positive Healthcare, OTC, FreeHivTest.net" required>
+                </div>
+              </div>
+              
+              <div class="form-group">
+                <label mean-token="'create-itemDescription'" class="control-label">Description</label>
+                <div>
+                  <textarea name="itemDescription" type="text" cols="30" rows="10" class="form-control" data-ng-model="item.description" id="itemDescription" placeholder="Please provide a description of the project item" required></textarea>
+                </div>
+              </div>
+
+              <h4>Billing/Shipping Info</h4>
+
+              <div class="form-group">
+                <label mean-token="'create-itemAudience'" class="control-label">Audience</label>
+                <div>
+                  <textarea name="itemAudience" type="text" cols="30" rows="10" class="form-control" data-ng-model="item.audience" id="itemAudience" placeholder="Describe the audience that will view the artwork" required></textarea>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label mean-token="'create-itemMessage'" class="control-label">Message</label>
+                <div>
+                  <textarea name="itemMessage" type="text" cols="30" rows="10" class="form-control" data-ng-model="item.message" id="itemMessage" placeholder="Describe the message you would like to convey to the audience" required></textarea>
                 </div>
               </div>
           </div>

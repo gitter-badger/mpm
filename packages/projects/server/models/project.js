@@ -95,7 +95,25 @@ var ProjectSchema = new Schema({
     template: String,
     url: String,
     content: String,
-    cta: String
+    cta: String,
+    audience: String,
+    message: String,
+    billing: {
+      address1: String,
+      address2: String,
+      city: String,
+      state: String,
+      zip: Number,
+      country: String,
+      attention: String
+    },
+    quantity: Number,
+    dimensions: String,
+    mounted: Boolean,
+    grommets: Boolean,
+    polePockets: Boolean,
+    completionDate: String,
+    confidential: String
   }],
   progress: {
     type: Number
