@@ -108,6 +108,10 @@ footer p {
 .padding{
     padding:20px;
 }
+
+.file-preview{
+    width:100%;
+}
 /*.ng-invalid.ng-dirty{*/
     /*border-color:#FA787E;*/
 /*}*/

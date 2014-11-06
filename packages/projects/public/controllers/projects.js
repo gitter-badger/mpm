@@ -21,40 +21,10 @@ angular.module('mean.projects').controller('ProjectsController', ['$scope', '$st
       return $scope.global.isAdmin || $itemHasUser;
     };
 
-    $scope.today = function() {
-      $scope.dt = new Date();
-      $scope.dt.setDate($scope.dt.getDate() + 14);
+    $scope.hasFileAuth = function(file) {
+      if(!file || !file.user) return false;
+      if(file.user._id === $scope.global.user._id) return $scope.global.isAdmin || true;
     };
-    $scope.today();
-
-    $scope.clear = function () {
-      $scope.dt = null;
-    };
-
-    // Disable weekend selection
-    $scope.disabled = function(date, mode) {
-      return ( mode === 'day' && ( date.getDay() === 0 || date.getDay() === 6 ) );
-    };
-
-    
-    $scope.minDate = new Date();
-    $scope.minDate.setDate($scope.minDate.getDate() + 14);
-
-    $scope.open = function($event) {
-      $event.preventDefault();
-      $event.stopPropagation();
-
-      $scope.opened = true;
-    };
-
-    $scope.dateOptions = {
-      formatYear: 'yy',
-      startingDay: 1
-    };
-
-
-    $scope.formats = ['dd-MMMM-yyyy', 'yyyy/MM/dd', 'dd.MM.yyyy', 'shortDate'];
-    $scope.format = $scope.formats[0];
 
     $scope.alerts = [];
 
@@ -243,6 +213,21 @@ angular.module('mean.projects').controller('ProjectsController', ['$scope', '$st
       }
     };
 
+    $scope.removeFile = function(item, file) {
+      console.log(file);
+      console.log(item);
+      if(confirm('Are you sure you want to remove this file from your project?') === true){
+        for(var f in item.files){
+          if(item.files[f] === file){
+            item.files.splice(f, 1);
+            item.fileCount--;
+            $scope.update(true);
+          }
+        }
+        
+      };
+    };
+
     $scope.update = function(isValid) {
       if (isValid) {
         var project = $scope.project;
@@ -305,7 +290,7 @@ angular.module('mean.projects').controller('ProjectsController', ['$scope', '$st
       });
     };
   }
-]).controller('DateController', ['$scope', '$stateParams', '$location', 'Global', 'Projects', '$http',
+]).controller('ProjectDateController', ['$scope', '$stateParams', '$location', 'Global', 'Projects', '$http',
   function($scope, $stateParams, $location, Global, Projects, $http) {
 
     $scope.today = function() {
@@ -363,6 +348,48 @@ angular.module('mean.projects').controller('ProjectsController', ['$scope', '$st
       ]
     };
 
+    $scope.countries = [
+      "Afghanistan", "Aland Islands", "Albania", "Algeria", "American Samoa", "Andorra", "Angola",
+      "Anguilla", "Antarctica", "Antigua And Barbuda", "Argentina", "Armenia", "Aruba", "Australia", "Austria",
+      "Azerbaijan", "Bahamas", "Bahrain", "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin",
+      "Bermuda", "Bhutan", "Bolivia, Plurinational State of", "Bonaire, Sint Eustatius and Saba", "Bosnia and Herzegovina",
+      "Botswana", "Bouvet Island", "Brazil",
+      "British Indian Ocean Territory", "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cambodia",
+      "Cameroon", "Canada", "Cape Verde", "Cayman Islands", "Central African Republic", "Chad", "Chile", "China",
+      "Christmas Island", "Cocos (Keeling) Islands", "Colombia", "Comoros", "Congo",
+      "Congo, the Democratic Republic of the", "Cook Islands", "Costa Rica", "Cote d'Ivoire", "Croatia", "Cuba",
+      "Cyprus", "Czech Republic", "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Ecuador", "Egypt",
+      "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Ethiopia", "Falkland Islands (Malvinas)",
+      "Faroe Islands", "Fiji", "Finland", "France", "French Guiana", "French Polynesia",
+      "French Southern Territories", "Gabon", "Gambia", "Georgia", "Germany", "Ghana", "Gibraltar", "Greece",
+      "Greenland", "Grenada", "Guadeloupe", "Guam", "Guatemala", "Guernsey", "Guinea",
+      "Guinea-Bissau", "Guyana", "Haiti", "Heard Island and McDonald Islands", "Holy See (Vatican City State)",
+      "Honduras", "Hong Kong", "Hungary", "Iceland", "India", "Indonesia", "Iran, Islamic Republic of", "Iraq",
+      "Ireland", "Isle of Man", "Israel", "Italy", "Jamaica", "Japan", "Jersey", "Jordan", "Kazakhstan", "Kenya",
+      "Kiribati", "Korea, Democratic People's Republic of", "Korea, Republic of", "Kuwait", "Kyrgyzstan",
+      "Lao People's Democratic Republic", "Latvia", "Lebanon", "Lesotho", "Liberia", "Libya",
+      "Liechtenstein", "Lithuania", "Luxembourg", "Macao", "Macedonia, The Former Yugoslav Republic Of",
+      "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Martinique",
+      "Mauritania", "Mauritius", "Mayotte", "Mexico", "Micronesia, Federated States of", "Moldova, Republic of",
+      "Monaco", "Mongolia", "Montenegro", "Montserrat", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru",
+      "Nepal", "Netherlands", "New Caledonia", "New Zealand", "Nicaragua", "Niger",
+      "Nigeria", "Niue", "Norfolk Island", "Northern Mariana Islands", "Norway", "Oman", "Pakistan", "Palau",
+      "Palestinian Territory, Occupied", "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines",
+      "Pitcairn", "Poland", "Portugal", "Puerto Rico", "Qatar", "Reunion", "Romania", "Russian Federation",
+      "Rwanda", "Saint Barthelemy", "Saint Helena, Ascension and Tristan da Cunha", "Saint Kitts and Nevis", "Saint Lucia",
+      "Saint Martin (French Part)", "Saint Pierre and Miquelon", "Saint Vincent and the Grenadines", "Samoa", "San Marino",
+      "Sao Tome and Principe", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore",
+      "Sint Maarten (Dutch Part)", "Slovakia", "Slovenia", "Solomon Islands", "Somalia", "South Africa",
+      "South Georgia and the South Sandwich Islands", "South Sudan", "Spain", "Sri Lanka", "Sudan", "Suriname",
+      "Svalbard and Jan Mayen", "Swaziland", "Sweden", "Switzerland", "Syrian Arab Republic",
+      "Taiwan, Province of China", "Tajikistan", "Tanzania, United Republic of", "Thailand", "Timor-Leste",
+      "Togo", "Tokelau", "Tonga", "Trinidad and Tobago", "Tunisia", "Turkey", "Turkmenistan",
+      "Turks and Caicos Islands", "Tuvalu", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom",
+      "United States", "United States Minor Outlying Islands", "Uruguay", "Uzbekistan", "Vanuatu",
+      "Venezuela, Bolivarian Republic of", "Viet Nam", "Virgin Islands, British", "Virgin Islands, U.S.",
+      "Wallis and Futuna", "Western Sahara", "Yemen", "Zambia", "Zimbabwe"
+    ];
+
     $scope.status = {
       isopen: false
     };
@@ -381,19 +408,62 @@ angular.module('mean.projects').controller('ProjectsController', ['$scope', '$st
       $scope.status.isopen = !$scope.status.isopen;
     };
 
+    
+
     $scope.open = function(theTemplate, type, item) {
       
       switch(type){
         case 'item':
-          console.log('opening item modal');
+
+        $scope.today = function() {
+        $scope.dt = new Date();
+        $scope.dt.setDate($scope.dt.getDate() + 14);
+        };
+        $scope.today();
+
+        $scope.clear = function () {
+          $scope.dt = null;
+        };
+
+        // Disable weekend selection
+        $scope.dateDisabled = function(date, mode) {
+          return ( mode === 'day' && ( date.getDay() === 0 || date.getDay() === 6 ) );
+        };
+
+        
+        $scope.minDate = new Date();
+        $scope.minDate.setDate($scope.minDate.getDate() + 14);
+
+        $scope.dateOpen = function($event) {
+          $event.preventDefault();
+          $event.stopPropagation();
+
+          $scope.opened = true;
+        };
+
+        $scope.dateOptions = {
+          formatYear: 'yy',
+          startingDay: 1
+        };
+
+
+        $scope.formats = ['dd-MMMM-yyyy', 'yyyy/MM/dd', 'dd.MM.yyyy', 'shortDate'];
+        $scope.format = $scope.formats[0];
+
+        $scope.assets = {files: []};
+        $scope.isNewItem = true;
+        console.log('opening item modal');
 
           if($scope.modalType === null) {
             $scope.modalType = {name: item.subType, template: item.template, department: item.itemType};    
           }
 
-          if(item !== null) {
+          if(item !== undefined) {
+            $scope.isNewItem = false;
+            $scope.assets.files = item.files;
             $scope.openItem = item;
             $scope.oldContent = angular.copy(item);
+            $scope.dt = item.completionDate;
           }
         break;
 
@@ -424,10 +494,32 @@ angular.module('mean.projects').controller('ProjectsController', ['$scope', '$st
       modalInstance.result.then(function (item) {
         switch(type){
           case 'item':
+
             $scope.newItem = item;
             $scope.newItem.itemType = $scope.modalType.department;
             $scope.newItem.subType = $scope.modalType.name;
             $scope.newItem.template = $scope.modalType.template;
+            $scope.newItem.files = $scope.assets.files;
+            $scope.newItem.completionDate = item.dt;
+            $scope.newItem.fileCount = 0;
+
+            for(var f in $scope.newItem.files){
+              $scope.newItem.fileCount++;
+            }
+            
+            if($scope.isNewItem){
+              $scope.newItem.users = [];
+              //add users to the item
+              for(var u in $scope.users){
+                if($scope.users[u].department === $scope.newItem.subType){
+                  $scope.newItem.users.push({
+                    _id: $scope.users[u]._id,
+                    username: $scope.users[u].username,
+                    status: 'pending'
+                  });
+                }
+              }
+            }
 
             $scope.newItem.remove = function($index) {
               if(confirm('Are you sure you want to remove this item from your project?') === true)  {
@@ -448,6 +540,7 @@ angular.module('mean.projects').controller('ProjectsController', ['$scope', '$st
             $scope.allProjectItems.items.push($scope.newItem);
             $scope.allProjectItems.count++;
             $scope.removeAlertDuplicate('no-items');
+            console.log($scope.allProjectItems);
 
             //if we are editing an item in an existing project
             if($scope.project){
@@ -457,6 +550,7 @@ angular.module('mean.projects').controller('ProjectsController', ['$scope', '$st
 
             //reset modalType
             $scope.modalType = null;
+            $scope.opened = false;
           break;
 
           case 'discussion':
@@ -464,7 +558,6 @@ angular.module('mean.projects').controller('ProjectsController', ['$scope', '$st
             $scope.discussion = item;
 
             if ($scope.openDiscussion){
-              console.log('existing');
               $scope.openDiscussion.messages.push({
                 author: {
                   name: {
@@ -483,7 +576,6 @@ angular.module('mean.projects').controller('ProjectsController', ['$scope', '$st
                 }
               }
             } else{
-              console.log('not existing');
               $scope.discussion.created = new Date();
               $scope.discussion.creator = {
                 name: {
@@ -530,7 +622,6 @@ angular.module('mean.projects').controller('ProjectsController', ['$scope', '$st
       }, function (type) {
         switch(type){
           case 'item':
-            console.log('canceling item');
             var cancelObj = {
               open: $scope.openItem,
               old: $scope.oldContent

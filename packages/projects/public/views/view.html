@@ -135,6 +135,22 @@
                     <textarea name="itemContent" type="text" cols="30" rows="10" class="form-control" data-ng-model="item.content" id="itemContent" placeholder="Please provide content/copy for project item. Ex: about page text, contact page info" required></textarea>
                   </div>
                 </div>
+
+                <div data-ng-controller="MeanUploadController">
+                    <mean-upload file-dest="'/packages/files/'"
+                    upload-callback="uploadFinished(files)"
+                    upload-file-callback="uploadFileCallback(file)">
+                    </mean-upload>
+                </div>
+                <div class="row">
+                  <div class="col-md-2" data-ng-repeat="file in assets.files">
+                    <h5>{{file.name}}</h5>
+                    <h6>from: {{file.user.name.first}} {{file.user.name.last}}</h6>
+                    <img src="{{file.src}}" class="file-preview"/>
+                    <a class="text-left" target="_self" href="{{file.src}}" download="{{file.name}}">Download</a>&nbsp; &nbsp;
+                    <a class="text-right" href data-ng-show="hasFileAuth(file)" data-ng-click="removeFile(item, file)">Remove</a>
+                  </div>
+                </div>
             </div>
             <div class="modal-footer">
                 <a class="btn btn-warning" href data-ng-click="cancel()">Cancel</a><button class="btn btn-primary">Save</button>
@@ -331,8 +347,21 @@
         <hr>
       </div>
 
+    </div>
+    
 
-
+    <h4>Files</h4>
+    <div class="row">
+      <div data-ng-repeat="item in project.items">
+        <div class="col-md-2" data-ng-repeat="file in item.files">
+          <h5>{{file.name}}</h5>
+          <h6>from: {{file.user.name.first}} {{file.user.name.last}}</h6>
+          <img src="{{file.src}}" class="file-preview"/>
+          <a class="text-left" target="_self" href="{{file.src}}" download="{{file.name}}">Download</a>&nbsp; &nbsp;
+          <a class="text-right" href data-ng-show="hasFileAuth(file)" data-ng-click="removeFile(item, file)">Remove</a>
+        </div>
+      </div>
+      
     </div>
 
 

@@ -76,7 +76,7 @@
           </div>
 
           <div class="row">
-              <div class="col-md-6" data-ng-controller="DateController">
+              <div class="col-md-6" data-ng-controller="ProjectDateController">
                   <label mean-token="'create-dt'" class="control-label">Requested Completion Date<span class="error">*</span></label>
                   <div class="input-group">
                     <input type="text" class="form-control" datepicker-popup="MM.dd.yyyy" ng-model="$parent.dt" is-open="opened" min-date="minDate" max-date="'2015-06-22'" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="true" close-text="Close" required/>
@@ -111,7 +111,7 @@
                   <span data-ng-show="modalType === null">Choose Item <span class="caret"></span></span>
                   <span data-ng-show="modalType !== null">{{modalType.name}} <span class="caret"></span></span>
                 </button>
-                <ul class="dropdown-menu" role="menu">
+                <ul class="dropdown-menu items-menu" role="menu">
                   <li class="divider"></li>
                   <p class="text-center"><i>Marketing: Web</i></p>
                   <li class="divider"></li>
@@ -138,10 +138,23 @@
                 <h3 class="modal-title">Website</h3>
             </div>
             <div class="modal-body">
-                <div class="form-group">
-                  <label mean-token="'create-itemTitle'" class="control-label">Title</label>
-                  <div>
-                    <input name="title" type="text" class="form-control" data-ng-model="item.title" id="title" placeholder="ex: Pharmacy Website" required>
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label mean-token="'create-itemTitle'" class="control-label">Title</label>
+                      <div>
+                        <input name="title" type="text" class="form-control" data-ng-model="item.title" id="title" placeholder="ex: Pharmacy Website" required>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                      <label mean-token="'create-dt'" class="control-label">Requested Completion Date<span class="error">*</span></label>
+                      <div class="input-group">
+                        <input type="text" class="form-control" datepicker-popup="MM.dd.yyyy" ng-model="item.dt" is-open="opened" min-date="minDate" max-date="'2015-06-22'" datepicker-options="dateOptions" date-disabled="dateDisabled(date, mode)" ng-required="true" close-text="Close" required/>
+                        <span class="input-group-btn">
+                          <button type="button" class="btn btn-default" ng-click="dateOpen($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                        </span>
+                      </div>
                   </div>
                 </div>
               
@@ -173,6 +186,19 @@
                     <textarea name="itemContent" type="text" cols="30" rows="10" class="form-control" data-ng-model="item.content" id="itemContent" placeholder="Please provide content/copy for project item. Ex: about page text, contact page info" required></textarea>
                   </div>
                 </div>
+
+                <div data-ng-controller="MeanUploadController">
+                    <mean-upload file-dest="'/packages/files/'"
+                    upload-callback="uploadFinished(files)"
+                    upload-file-callback="uploadFileCallback(file)">
+                    </mean-upload>
+                </div>
+                <div class="col-md-3" data-ng-repeat="file in assets.files">
+                  <img src="{{file.src}}" class="file-preview"/>
+                  <button class="btn btn-lrg" data-ng-click="removeFile(file)">Remove</button>
+                </div>
+
+                
             </div>
             <div class="modal-footer">
                 <a class="btn btn-warning" href data-ng-click="cancel()">Cancel</a><button class="btn btn-primary">Save</button>
@@ -186,12 +212,25 @@
               <h3 class="modal-title">Splash Page</h3>
           </div>
           <div class="modal-body">
-              <div class="form-group">
-                <label mean-token="'create-itemTitle'" class="control-label">Title</label>
-                <div>
-                  <input name="itemTitle" type="text" class="form-control" data-ng-model="item.title" id="itemTitle" placeholder="ex: Pharmacy Website" required>
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label mean-token="'create-itemTitle'" class="control-label">Title</label>
+                      <div>
+                        <input name="title" type="text" class="form-control" data-ng-model="item.title" id="title" placeholder="ex: Pharmacy Website" required>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                      <label mean-token="'create-dt'" class="control-label">Requested Completion Date<span class="error">*</span></label>
+                      <div class="input-group">
+                        <input type="text" class="form-control" datepicker-popup="MM.dd.yyyy" ng-model="item.dt" is-open="opened" min-date="minDate" max-date="'2015-06-22'" datepicker-options="dateOptions" date-disabled="dateDisabled(date, mode)" ng-required="true" close-text="Close" required/>
+                        <span class="input-group-btn">
+                          <button type="button" class="btn btn-default" ng-click="dateOpen($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                        </span>
+                      </div>
+                  </div>
                 </div>
-              </div>
             
               <div class="form-group">
                 <label mean-token="'create-itemBusinessLine'" class="control-label">Business Line</label>
@@ -228,6 +267,18 @@
                   <textarea name="itemCta" type="text" cols="30" rows="10" class="form-control" data-ng-model="item.cta" id="itemCta" placeholder="Please describe the splash page call to action." required></textarea>
                 </div>
               </div>
+
+              <div data-ng-controller="MeanUploadController">
+                    <mean-upload file-dest="'/packages/files/'"
+                    upload-callback="uploadFinished(files)"
+                    upload-file-callback="uploadFileCallback(file)">
+                    </mean-upload>
+                </div>
+                <div class="col-md-3" data-ng-repeat="file in assets.files">
+                  <img src="{{file.src}}" class="file-preview"/>
+                  <button class="btn btn-lrg" data-ng-click="removeFile(file)">Remove</button>
+                </div>
+
           </div>
           <div class="modal-footer">
               <a class="btn btn-warning" href data-ng-click="cancel()">Cancel</a><button class="btn btn-primary">Save</button>
@@ -242,12 +293,25 @@
               <h3 class="modal-title">Site Update</h3>
           </div>
           <div class="modal-body">
-              <div class="form-group">
-                <label mean-token="'create-itemTitle'" class="control-label">Title</label>
-                <div>
-                  <input name="itemTitle" type="text" class="form-control" data-ng-model="item.title" id="itemTitle" placeholder="ex: Pharmacy Website" required>
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label mean-token="'create-itemTitle'" class="control-label">Title</label>
+                      <div>
+                        <input name="title" type="text" class="form-control" data-ng-model="item.title" id="title" placeholder="ex: Pharmacy Website" required>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                      <label mean-token="'create-dt'" class="control-label">Requested Completion Date<span class="error">*</span></label>
+                      <div class="input-group">
+                        <input type="text" class="form-control" datepicker-popup="MM.dd.yyyy" ng-model="item.dt" is-open="opened" min-date="minDate" max-date="'2015-06-22'" datepicker-options="dateOptions" date-disabled="dateDisabled(date, mode)" ng-required="true" close-text="Close" required/>
+                        <span class="input-group-btn">
+                          <button type="button" class="btn btn-default" ng-click="dateOpen($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                        </span>
+                      </div>
+                  </div>
                 </div>
-              </div>
             
               <div class="form-group">
                 <label mean-token="'create-itemBusinessLine'" class="control-label">Business Line</label>
@@ -277,6 +341,18 @@
                   <textarea name="itemContent" type="text" cols="30" rows="10" class="form-control" data-ng-model="item.content" id="itemContent" placeholder="Please provide content/copy for project item. Ex: about page text, contact page info" required></textarea>
                 </div>
               </div>
+
+              <div data-ng-controller="MeanUploadController">
+                    <mean-upload file-dest="'/packages/files/'"
+                    upload-callback="uploadFinished(files)"
+                    upload-file-callback="uploadFileCallback(file)">
+                    </mean-upload>
+                </div>
+                <div class="col-md-3" data-ng-repeat="file in assets.files">
+                  <img src="{{file.src}}" class="file-preview"/>
+                  <button class="btn btn-lrg" data-ng-click="removeFile(file)">Remove</button>
+                </div>
+
           </div>
           <div class="modal-footer">
               <a class="btn btn-warning" href data-ng-click="cancel()">Cancel</a><button class="btn btn-primary">Save</button>
@@ -291,12 +367,25 @@
               <h3 class="modal-title">Artwork</h3>
           </div>
           <div class="modal-body">
-              <div class="form-group">
-                <label mean-token="'create-itemTitle'" class="control-label">Title</label>
-                <div>
-                  <input name="itemTitle" type="text" class="form-control" data-ng-model="item.title" id="itemTitle" placeholder="ex: Pharmacy Website" required>
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label mean-token="'create-itemTitle'" class="control-label">Title</label>
+                      <div>
+                        <input name="title" type="text" class="form-control" data-ng-model="item.title" id="title" placeholder="ex: Pharmacy Website" required>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                      <label mean-token="'create-dt'" class="control-label">Requested Completion Date<span class="error">*</span></label>
+                      <div class="input-group">
+                        <input type="text" class="form-control" datepicker-popup="MM.dd.yyyy" ng-model="item.dt" is-open="opened" min-date="minDate" max-date="'2015-06-22'" datepicker-options="dateOptions" date-disabled="dateDisabled(date, mode)" ng-required="true" close-text="Close" required/>
+                        <span class="input-group-btn">
+                          <button type="button" class="btn btn-default" ng-click="dateOpen($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                        </span>
+                      </div>
+                  </div>
                 </div>
-              </div>
             
               <div class="form-group">
                 <label mean-token="'create-itemBusinessLine'" class="control-label">Business Line</label>
@@ -326,6 +415,19 @@
                   <textarea name="itemMessage" type="text" cols="30" rows="10" class="form-control" data-ng-model="item.message" id="itemMessage" placeholder="Describe the message you would like to convey to the audience" required></textarea>
                 </div>
               </div>
+
+              <div data-ng-controller="MeanUploadController">
+                    <mean-upload file-dest="'/packages/files/'"
+                    upload-callback="uploadFinished(files)"
+                    upload-file-callback="uploadFileCallback(file)">
+                    </mean-upload>
+                </div>
+                <div class="col-md-3" data-ng-repeat="file in assets.files">
+                  <img src="{{file.src}}" class="file-preview"/>
+                  <button class="btn btn-lrg" data-ng-click="removeFile(file)">Remove</button>
+                </div>
+
+
           </div>
           <div class="modal-footer">
               <a class="btn btn-warning" href data-ng-click="cancel()">Cancel</a><button class="btn btn-primary">Save</button>
@@ -340,12 +442,245 @@
               <h3 class="modal-title">Flyer/Palm Card</h3>
           </div>
           <div class="modal-body">
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label mean-token="'create-itemTitle'" class="control-label">Title</label>
+                      <div>
+                        <input name="title" type="text" class="form-control" data-ng-model="item.title" id="title" placeholder="ex: Pharmacy Website" required>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                      <label mean-token="'create-dt'" class="control-label">Requested Completion Date<span class="error">*</span></label>
+                      <div class="input-group">
+                        <input type="text" class="form-control" datepicker-popup="MM.dd.yyyy" ng-model="item.dt" is-open="opened" min-date="minDate" max-date="'2015-06-22'" datepicker-options="dateOptions" date-disabled="dateDisabled(date, mode)" ng-required="true" close-text="Close" required/>
+                        <span class="input-group-btn">
+                          <button type="button" class="btn btn-default" ng-click="dateOpen($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                        </span>
+                      </div>
+                  </div>
+                </div>
+            
               <div class="form-group">
-                <label mean-token="'create-itemTitle'" class="control-label">Title</label>
+                <label mean-token="'create-itemBusinessLine'" class="control-label">Business Line</label>
                 <div>
-                  <input name="itemTitle" type="text" class="form-control" data-ng-model="item.title" id="itemTitle" placeholder="ex: Pharmacy Website" required>
+                  <input name="itemBusinessLine" type="text" class="form-control" data-ng-model="item.businessLine" id="itemBusinessLine" placeholder="ex: Positive Healthcare, OTC, FreeHivTest.net" required>
                 </div>
               </div>
+
+              <div class="form-group">
+                <label mean-token="'create-itemQuantity'" class="control-label">Quantity</label>
+                <div>
+                  <input name="itemQuantity" type="number" class="form-control" data-ng-model="item.quantity" id="itemQuantity"  required>
+                </div>
+              </div>
+              
+              <div class="form-group">
+                <label mean-token="'create-itemDescription'" class="control-label">Description</label>
+                <div>
+                  <textarea name="itemDescription" type="text" cols="30" rows="10" class="form-control" data-ng-model="item.description" id="itemDescription" placeholder="Please provide a description of the project item" required></textarea>
+                </div>
+              </div>
+
+              <h4>Billing/Shipping Info</h4>
+
+              <div class="form-group">
+                <label mean-token="'create-itemAttention'" class="control-label">Attention</label>
+                <div>
+                  <input name="itemAttention" type="text" class="form-control" data-ng-model="item.billing.attention" id="itemAttention" placeholder="Attention" required>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                      <label mean-token="'create-itemAddress1'" class="control-label">Address</label>
+                      <div>
+                        <input name="itemAddress1" type="text" class="form-control" data-ng-model="item.billing.addressOne" id="itemAddress1" placeholder="Street Address" required>
+                      </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                      <label mean-token="'create-itemAddress2'" class="control-label">Address Line 2</label>
+                      <div>
+                        <input name="itemAddress2" type="text" class="form-control" data-ng-model="item.billing.addresswo" id="itemAddress2" placeholder="Address Line 2" required>
+                      </div>
+                    </div>
+                </div>
+
+              </div>
+
+              <div class="row">
+                <div class="col-md-3">
+                  <div class="form-group">
+                    <label mean-token="'create-itemCity'" class="control-label">City</label>
+                    <div>
+                      <input name="itemCity" type="text" class="form-control" data-ng-model="item.billing.city" id="itemCity" placeholder="City" required>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-3">
+                  <div class="form-group">
+                    <label mean-token="'create-itemState'" class="control-label">State</label>
+                    <div>
+                      <input name="itemState" type="text" class="form-control" data-ng-model="item.billing.state" id="itemState" placeholder="State" required>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-3">
+                  <div class="form-group">
+                    <label mean-token="'create-itemZip'" class="control-label">Zip</label>
+                    <div>
+                      <input name="itemZip" type="number" class="form-control" data-ng-model="item.billing.zip" id="itemZip" placeholder="Zip" required>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-3">
+                  <div class="form-group">
+                    <label mean-token="'create-itemCountry'" class="control-label">Country</label>
+                    <div data-ng-controller="ModalController">
+                      <select name="itemZip" class="form-control" data-ng-model="item.billing.country" id="itemCountry" placeholder="" required>
+                      <option value="">Please Choose</option>
+                      <option data-ng-repeat="country in countries" value="{{country}}">{{country}}</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+
+              <div data-ng-controller="MeanUploadController">
+                    <mean-upload file-dest="'/packages/files/'"
+                    upload-callback="uploadFinished(files)"
+                    upload-file-callback="uploadFileCallback(file)">
+                    </mean-upload>
+                </div>
+                <div class="col-md-3" data-ng-repeat="file in assets.files">
+                  <img src="{{file.src}}" class="file-preview"/>
+                  <button class="btn btn-lrg" data-ng-click="removeFile(file)">Remove</button>
+                </div>
+
+
+              
+          </div>
+          <div class="modal-footer">
+              <a class="btn btn-warning" href data-ng-click="cancel()">Cancel</a><button class="btn btn-primary">Save</button>
+          </div>
+        </form>
+      </script>
+
+      <script type="text/ng-template" id="modal-postcardmailer.html">
+        <form data-ng-submit="ok()">
+          <div class="modal-header">
+              <h3 class="modal-title">Postcard Mailer</h3>
+          </div>
+          <div class="modal-body">
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label mean-token="'create-itemTitle'" class="control-label">Title</label>
+                      <div>
+                        <input name="title" type="text" class="form-control" data-ng-model="item.title" id="title" placeholder="ex: Pharmacy Website" required>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                      <label mean-token="'create-dt'" class="control-label">Requested Completion Date<span class="error">*</span></label>
+                      <div class="input-group">
+                        <input type="text" class="form-control" datepicker-popup="MM.dd.yyyy" ng-model="item.dt" is-open="opened" min-date="minDate" max-date="'2015-06-22'" datepicker-options="dateOptions" date-disabled="dateDisabled(date, mode)" ng-required="true" close-text="Close" required/>
+                        <span class="input-group-btn">
+                          <button type="button" class="btn btn-default" ng-click="dateOpen($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                        </span>
+                      </div>
+                  </div>
+                </div>
+            
+              <div class="form-group">
+                <label mean-token="'create-itemBusinessLine'" class="control-label">Business Line</label>
+                <div>
+                  <input name="itemBusinessLine" type="text" class="form-control" data-ng-model="item.businessLine" id="itemBusinessLine" placeholder="ex: Positive Healthcare, OTC, FreeHivTest.net" required>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label mean-token="'create-itemQuantity'" class="control-label">Quantity</label>
+                <div>
+                  <input name="itemQuantity" type="number" class="form-control" data-ng-model="item.quantity" id="itemQuantity"  required>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label mean-token="'create-itemConfidential'" class="control-label checkbox">
+                  <input type="checkbox" ng-model="item.confidential">
+                  Is this mailer confidential?
+                </label>
+              </div>
+
+              <div class="form-group">
+                <label mean-token="'create-itemDistCodes'" class="control-label">Distribution Zip Codes</label>
+                <div>
+                  <input name="itemDistCodes" type="text" class="form-control" data-ng-model="item.distCodes" id="itemDistCodes" placeholder="List all distribution zip codes here" required>
+                </div>
+              </div>
+              
+              <div class="form-group">
+                <label mean-token="'create-itemDescription'" class="control-label">Description</label>
+                <div>
+                  <textarea name="itemDescription" type="text" cols="30" rows="10" class="form-control" data-ng-model="item.description" id="itemDescription" placeholder="Please provide a description of the project item" required></textarea>
+                </div>
+              </div>
+
+              <div data-ng-controller="MeanUploadController">
+                    <mean-upload file-dest="'/packages/files/'"
+                    upload-callback="uploadFinished(files)"
+                    upload-file-callback="uploadFileCallback(file)">
+                    </mean-upload>
+                </div>
+                <div class="col-md-3" data-ng-repeat="file in assets.files">
+                  <img src="{{file.src}}" class="file-preview"/>
+                  <button class="btn btn-lrg" data-ng-click="removeFile(file)">Remove</button>
+                </div>
+
+                
+              
+          </div>
+          <div class="modal-footer">
+              <a class="btn btn-warning" href data-ng-click="cancel()">Cancel</a><button class="btn btn-primary">Save</button>
+          </div>
+        </form>
+      </script>
+
+      <script type="text/ng-template" id="modal-vinylbanner.html">
+        <form data-ng-submit="ok()">
+          <div class="modal-header">
+              <h3 class="modal-title">Vinyl Banner</h3>
+          </div>
+          <div class="modal-body">
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label mean-token="'create-itemTitle'" class="control-label">Title</label>
+                      <div>
+                        <input name="title" type="text" class="form-control" data-ng-model="item.title" id="title" placeholder="ex: Pharmacy Website" required>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                      <label mean-token="'create-dt'" class="control-label">Requested Completion Date<span class="error">*</span></label>
+                      <div class="input-group">
+                        <input type="text" class="form-control" datepicker-popup="MM.dd.yyyy" ng-model="item.dt" is-open="opened" min-date="minDate" max-date="'2015-06-22'" datepicker-options="dateOptions" date-disabled="dateDisabled(date, mode)" ng-required="true" close-text="Close" required/>
+                        <span class="input-group-btn">
+                          <button type="button" class="btn btn-default" ng-click="dateOpen($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                        </span>
+                      </div>
+                  </div>
+                </div>
             
               <div class="form-group">
                 <label mean-token="'create-itemBusinessLine'" class="control-label">Business Line</label>
@@ -361,27 +696,433 @@
                 </div>
               </div>
 
+              <div class="form-group">
+                <label mean-token="'create-itemQuantity'" class="control-label">Quantity</label>
+                <div>
+                  <input name="itemQuantity" type="number" class="form-control" data-ng-model="item.quantity" id="itemQuantity"  required>
+                </div>
+              </div>
+              <div class="row">
+                <div class="form-group">
+                  <div class="col-md-3">
+                    Banner Width<input name="itemWidth" type="number" class="form-control" data-ng-model="item.dimensions.width" id="itemWidth"  required>
+                  </div>
+                  <div class="col-md-3">
+                    Banner Height<input name="itemHeight" type="number" class="form-control" data-ng-model="item.dimensions.height" id="itemHeight"  required>
+                  </div>
+
+                </div>
+
+                <div class="form-group col-md-3">
+                  <label mean-token="'create-itemGrommets'" class="control-label checkbox">
+                    <input type="checkbox" ng-model="item.grommets">
+                    Need grommets?
+                  </label>
+                </div>
+
+                <div class="form-group col-md-3">
+                  <label mean-token="'create-itemPolePockets'" class="control-label checkbox">
+                    <input type="checkbox" ng-model="item.polePockets">
+                    Need pole pockets?
+                  </label>
+                </div>
+              </div>
+
               <h4>Billing/Shipping Info</h4>
 
               <div class="form-group">
-                <label mean-token="'create-itemAudience'" class="control-label">Audience</label>
+                <label mean-token="'create-itemAttention'" class="control-label">Attention</label>
                 <div>
-                  <textarea name="itemAudience" type="text" cols="30" rows="10" class="form-control" data-ng-model="item.audience" id="itemAudience" placeholder="Describe the audience that will view the artwork" required></textarea>
+                  <input name="itemAttention" type="text" class="form-control" data-ng-model="item.billing.attention" id="itemAttention" placeholder="Attention" required>
                 </div>
               </div>
 
-              <div class="form-group">
-                <label mean-token="'create-itemMessage'" class="control-label">Message</label>
-                <div>
-                  <textarea name="itemMessage" type="text" cols="30" rows="10" class="form-control" data-ng-model="item.message" id="itemMessage" placeholder="Describe the message you would like to convey to the audience" required></textarea>
+              <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                      <label mean-token="'create-itemAddress1'" class="control-label">Address</label>
+                      <div>
+                        <input name="itemAddress1" type="text" class="form-control" data-ng-model="item.billing.addressOne" id="itemAddress1" placeholder="Street Address" required>
+                      </div>
+                    </div>
                 </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                      <label mean-token="'create-itemAddress2'" class="control-label">Address Line 2</label>
+                      <div>
+                        <input name="itemAddress2" type="text" class="form-control" data-ng-model="item.billing.addressTwo" id="itemAddress2" placeholder="Address Line 2" required>
+                      </div>
+                    </div>
+                </div>
+
               </div>
+
+              <div class="row">
+                <div class="col-md-3">
+                  <div class="form-group">
+                    <label mean-token="'create-itemCity'" class="control-label">City</label>
+                    <div>
+                      <input name="itemCity" type="text" class="form-control" data-ng-model="item.billing.city" id="itemCity" placeholder="City" required>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-3">
+                  <div class="form-group">
+                    <label mean-token="'create-itemState'" class="control-label">State</label>
+                    <div>
+                      <input name="itemState" type="text" class="form-control" data-ng-model="item.billing.state" id="itemState" placeholder="State" required>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-3">
+                  <div class="form-group">
+                    <label mean-token="'create-itemZip'" class="control-label">Zip</label>
+                    <div>
+                      <input name="itemZip" type="number" class="form-control" data-ng-model="item.billing.zip" id="itemZip" placeholder="Zip" required>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-3">
+                  <div class="form-group">
+                    <label mean-token="'create-itemCountry'" class="control-label">Country</label>
+                    <div data-ng-controller="ModalController">
+                      <select name="itemZip" class="form-control" data-ng-model="item.billing.country" id="itemCountry" placeholder="" required>
+                      <option value="">Please Choose</option>
+                      <option data-ng-repeat="country in countries" value="{{country}}">{{country}}</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+
+              <div data-ng-controller="MeanUploadController">
+                    <mean-upload file-dest="'/packages/files/'"
+                    upload-callback="uploadFinished(files)"
+                    upload-file-callback="uploadFileCallback(file)">
+                    </mean-upload>
+                </div>
+                <div class="col-md-3" data-ng-repeat="file in assets.files">
+                  <img src="{{file.src}}" class="file-preview"/>
+                  <button class="btn btn-lrg" data-ng-click="removeFile(file)">Remove</button>
+                </div>
+
+
+              
           </div>
           <div class="modal-footer">
               <a class="btn btn-warning" href data-ng-click="cancel()">Cancel</a><button class="btn btn-primary">Save</button>
           </div>
         </form>
       </script>
+
+      <script type="text/ng-template" id="modal-signage.html">
+        <form data-ng-submit="ok()">
+          <div class="modal-header">
+              <h3 class="modal-title">Signage</h3>
+          </div>
+          <div class="modal-body">
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label mean-token="'create-itemTitle'" class="control-label">Title</label>
+                      <div>
+                        <input name="title" type="text" class="form-control" data-ng-model="item.title" id="title" placeholder="ex: Pharmacy Website" required>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                      <label mean-token="'create-dt'" class="control-label">Requested Completion Date<span class="error">*</span></label>
+                      <div class="input-group">
+                        <input type="text" class="form-control" datepicker-popup="MM.dd.yyyy" ng-model="item.dt" is-open="opened" min-date="minDate" max-date="'2015-06-22'" datepicker-options="dateOptions" date-disabled="dateDisabled(date, mode)" ng-required="true" close-text="Close" required/>
+                        <span class="input-group-btn">
+                          <button type="button" class="btn btn-default" ng-click="dateOpen($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                        </span>
+                      </div>
+                  </div>
+                </div>
+            
+              <div class="form-group">
+                <label mean-token="'create-itemBusinessLine'" class="control-label">Business Line</label>
+                <div>
+                  <input name="itemBusinessLine" type="text" class="form-control" data-ng-model="item.businessLine" id="itemBusinessLine" placeholder="ex: Positive Healthcare, OTC, FreeHivTest.net" required>
+                </div>
+              </div>
+              
+              <div class="form-group">
+                <label mean-token="'create-itemDescription'" class="control-label">Description</label>
+                <div>
+                  <textarea name="itemDescription" type="text" cols="30" rows="10" class="form-control" data-ng-model="item.description" id="itemDescription" placeholder="Please provide a description of the project item" required></textarea>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="form-group">
+                  <div class="col-md-3">
+                    Sign Width<input name="itemWidth" type="number" class="form-control" data-ng-model="item.dimensions.width" id="itemWidth"  required>
+                  </div>
+                  <div class="col-md-3">
+                    Sign Height<input name="itemHeight" type="number" class="form-control" data-ng-model="item.dimensions.height" id="itemHeight"  required>
+                  </div>
+
+                </div>
+              </div>
+
+              <h4>Billing/Shipping Info</h4>
+
+              <div class="form-group">
+                <label mean-token="'create-itemAttention'" class="control-label">Attention</label>
+                <div>
+                  <input name="itemAttention" type="text" class="form-control" data-ng-model="item.billing.attention" id="itemAttention" placeholder="Attention" required>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                      <label mean-token="'create-itemAddress1'" class="control-label">Address</label>
+                      <div>
+                        <input name="itemAddress1" type="text" class="form-control" data-ng-model="item.billing.addressOne" id="itemAddress1" placeholder="Street Address" required>
+                      </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                      <label mean-token="'create-itemAddress2'" class="control-label">Address Line 2</label>
+                      <div>
+                        <input name="itemAddress2" type="text" class="form-control" data-ng-model="item.billing.addresswo" id="itemAddress2" placeholder="Address Line 2" required>
+                      </div>
+                    </div>
+                </div>
+
+              </div>
+
+              <div class="row">
+                <div class="col-md-3">
+                  <div class="form-group">
+                    <label mean-token="'create-itemCity'" class="control-label">City</label>
+                    <div>
+                      <input name="itemCity" type="text" class="form-control" data-ng-model="item.billing.city" id="itemCity" placeholder="City" required>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-3">
+                  <div class="form-group">
+                    <label mean-token="'create-itemState'" class="control-label">State</label>
+                    <div>
+                      <input name="itemState" type="text" class="form-control" data-ng-model="item.billing.state" id="itemState" placeholder="State" required>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-3">
+                  <div class="form-group">
+                    <label mean-token="'create-itemZip'" class="control-label">Zip</label>
+                    <div>
+                      <input name="itemZip" type="number" class="form-control" data-ng-model="item.billing.zip" id="itemZip" placeholder="Zip" required>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-3">
+                  <div class="form-group">
+                    <label mean-token="'create-itemCountry'" class="control-label">Country</label>
+                    <div data-ng-controller="ModalController">
+                      <select name="itemZip" class="form-control" data-ng-model="item.billing.country" id="itemCountry" placeholder="" required>
+                      <option value="">Please Choose</option>
+                      <option data-ng-repeat="country in countries" value="{{country}}">{{country}}</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+
+              <div data-ng-controller="MeanUploadController">
+                    <mean-upload file-dest="'/packages/files/'"
+                    upload-callback="uploadFinished(files)"
+                    upload-file-callback="uploadFileCallback(file)">
+                    </mean-upload>
+                </div>
+                <div class="col-md-3" data-ng-repeat="file in assets.files">
+                  <img src="{{file.src}}" class="file-preview"/>
+                  <button class="btn btn-lrg" data-ng-click="removeFile(file)">Remove</button>
+                </div>
+
+
+              
+          </div>
+          <div class="modal-footer">
+              <a class="btn btn-warning" href data-ng-click="cancel()">Cancel</a><button class="btn btn-primary">Save</button>
+          </div>
+        </form>
+      </script>
+
+      <script type="text/ng-template" id="modal-poster.html">
+        <form data-ng-submit="ok()">
+          <div class="modal-header">
+              <h3 class="modal-title">Poster</h3>
+          </div>
+          <div class="modal-body">
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label mean-token="'create-itemTitle'" class="control-label">Title</label>
+                      <div>
+                        <input name="title" type="text" class="form-control" data-ng-model="item.title" id="title" placeholder="ex: Pharmacy Website" required>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                      <label mean-token="'create-dt'" class="control-label">Requested Completion Date<span class="error">*</span></label>
+                      <div class="input-group">
+                        <input type="text" class="form-control" datepicker-popup="MM.dd.yyyy" ng-model="item.dt" is-open="opened" min-date="minDate" max-date="'2015-06-22'" datepicker-options="dateOptions" date-disabled="dateDisabled(date, mode)" ng-required="true" close-text="Close" required/>
+                        <span class="input-group-btn">
+                          <button type="button" class="btn btn-default" ng-click="dateOpen($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                        </span>
+                      </div>
+                  </div>
+                </div>
+            
+              <div class="form-group">
+                <label mean-token="'create-itemBusinessLine'" class="control-label">Business Line</label>
+                <div>
+                  <input name="itemBusinessLine" type="text" class="form-control" data-ng-model="item.businessLine" id="itemBusinessLine" placeholder="ex: Positive Healthcare, OTC, FreeHivTest.net" required>
+                </div>
+              </div>
+              
+              <div class="form-group">
+                <label mean-token="'create-itemDescription'" class="control-label">Description</label>
+                <div>
+                  <textarea name="itemDescription" type="text" cols="30" rows="10" class="form-control" data-ng-model="item.description" id="itemDescription" placeholder="Please provide a description of the project item" required></textarea>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label mean-token="'create-itemQuantity'" class="control-label">Quantity</label>
+                <div>
+                  <input name="itemQuantity" type="number" class="form-control" data-ng-model="item.quantity" id="itemQuantity"  required>
+                </div>
+              </div>
+              <div class="row">
+                <div class="form-group">
+                  <div class="col-md-3">
+                    Poster Width<input name="itemWidth" type="number" class="form-control" data-ng-model="item.dimensions.width" id="itemWidth"  required>
+                  </div>
+                  <div class="col-md-3">
+                    Poster Height<input name="itemHeight" type="number" class="form-control" data-ng-model="item.dimensions.height" id="itemHeight"  required>
+                  </div>
+
+                </div>
+
+                <div class="form-group col-md-3">
+                  <label mean-token="'create-itemMounted'" class="control-label checkbox">
+                    <input type="checkbox" ng-model="item.mounted">
+                    Mounted Poster
+                  </label>
+                </div>
+
+              </div>
+
+              <h4>Billing/Shipping Info</h4>
+
+              <div class="form-group">
+                <label mean-token="'create-itemAttention'" class="control-label">Attention</label>
+                <div>
+                  <input name="itemAttention" type="text" class="form-control" data-ng-model="item.billing.attention" id="itemAttention" placeholder="Attention" required>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                      <label mean-token="'create-itemAddress1'" class="control-label">Address</label>
+                      <div>
+                        <input name="itemAddress1" type="text" class="form-control" data-ng-model="item.billing.addressOne" id="itemAddress1" placeholder="Street Address" required>
+                      </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                      <label mean-token="'create-itemAddress2'" class="control-label">Address Line 2</label>
+                      <div>
+                        <input name="itemAddress2" type="text" class="form-control" data-ng-model="item.billing.addressTwo" id="itemAddress2" placeholder="Address Line 2" required>
+                      </div>
+                    </div>
+                </div>
+
+              </div>
+
+              <div class="row">
+                <div class="col-md-3">
+                  <div class="form-group">
+                    <label mean-token="'create-itemCity'" class="control-label">City</label>
+                    <div>
+                      <input name="itemCity" type="text" class="form-control" data-ng-model="item.billing.city" id="itemCity" placeholder="City" required>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-3">
+                  <div class="form-group">
+                    <label mean-token="'create-itemState'" class="control-label">State</label>
+                    <div>
+                      <input name="itemState" type="text" class="form-control" data-ng-model="item.billing.state" id="itemState" placeholder="State" required>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-3">
+                  <div class="form-group">
+                    <label mean-token="'create-itemZip'" class="control-label">Zip</label>
+                    <div>
+                      <input name="itemZip" type="number" class="form-control" data-ng-model="item.billing.zip" id="itemZip" placeholder="Zip" required>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-3">
+                  <div class="form-group">
+                    <label mean-token="'create-itemCountry'" class="control-label">Country</label>
+                    <div data-ng-controller="ModalController">
+                      <select name="itemZip" class="form-control" data-ng-model="item.billing.country" id="itemCountry" placeholder="" required>
+                      <option value="">Please Choose</option>
+                      <option data-ng-repeat="country in countries" value="{{country}}">{{country}}</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+
+              <div data-ng-controller="MeanUploadController">
+                    <mean-upload file-dest="'/packages/files/'"
+                    upload-callback="uploadFinished(files)"
+                    upload-file-callback="uploadFileCallback(file)">
+                    </mean-upload>
+                </div>
+                <div class="col-md-3" data-ng-repeat="file in assets.files">
+                  <img src="{{file.src}}" class="file-preview"/>
+                  <button class="btn btn-lrg" data-ng-click="removeFile(file)">Remove</button>
+                </div>
+
+
+              
+          </div>
+          <div class="modal-footer">
+              <a class="btn btn-warning" href data-ng-click="cancel()">Cancel</a><button class="btn btn-primary">Save</button>
+          </div>
+        </form>
+      </script>
+
+
     </div>
 
     <div class="info-box" data-ng-repeat="item in allProjectItems.items">
@@ -394,7 +1135,6 @@
       </div>
       <div class="clearfix"></div>
     </div>
-    
     <hr>
     <div class="form-group">
       <div class="col-md-offset-4 col-md-4">

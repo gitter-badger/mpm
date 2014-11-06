@@ -88,10 +88,27 @@ var ProjectSchema = new Schema({
       username: String,
       status: String
     }],
+    fileCount: Number,
+    files: [{
+      src: String,
+      name: String,
+      size: String,
+      kind: String,
+      description: String,
+      user: {
+        name: {
+          first: String,
+          last: String
+        },
+        username: String,
+        _id: String
+      }
+    }],
     itemType: String,
     subType: String,
     businessLine: String,
     description: String,
+    distCodes: String,
     template: String,
     url: String,
     content: String,
@@ -99,8 +116,8 @@ var ProjectSchema = new Schema({
     audience: String,
     message: String,
     billing: {
-      address1: String,
-      address2: String,
+      addressOne: String,
+      addressTwo: String,
       city: String,
       state: String,
       zip: Number,
@@ -108,7 +125,10 @@ var ProjectSchema = new Schema({
       attention: String
     },
     quantity: Number,
-    dimensions: String,
+    dimensions: {
+      width: Number,
+      height: Number
+    },
     mounted: Boolean,
     grommets: Boolean,
     polePockets: Boolean,
