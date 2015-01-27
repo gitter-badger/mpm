@@ -76,6 +76,12 @@ var UserSchema = new Schema({
     type: String,
     default: 'Please Choose'
   },
+  activity: [{
+    action: String,
+    description: String,
+    projectId: String,
+    date: String
+  }],
   salt: String,
   resetPasswordToken: String,
   resetPasswordExpires: Date,

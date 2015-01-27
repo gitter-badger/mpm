@@ -1,0 +1,42 @@
+<section data-ng-controller="ProjectsController" data-ng-init="find()">
+  <div class="col-md-2">
+    <ul class="nav nav-stacked side-nav">
+      <li><a ui-sref="assigned projects">Assigned</a></li>
+      <li><a ui-sref="requested projects">Requested</a></li>
+      <li active="true"><a ui-sref="project notifications">Notifications</a></li>
+    </ul>
+  </div>
+  
+  <div class="col-md-10 padding-left">
+
+    <div class="bg-info padding10 col-md-10" data-ng-hide="myprojects.notifications.len > 0">
+        <h5 class="text-center"><i class="glyphicon glyphicon-info-sign"></i> &nbsp;You have no notifications.</h5>
+    </div>
+    
+    <div class="row project" data-ng-repeat="n in myprojects.notifications">
+      <div class="col-md-12">
+        <div class="row general border padding">
+          <!-- <span data-ng-if="hasAuthorization(project)">
+              <a class="btn" data-ng-click="remove(project);">
+                <i class="glyphicon glyphicon-trash"></i>
+              </a>
+            </span></td> -->
+          <div class="col-md-8"><h1>{{n.note.text}}</h1></div>
+          <div class="col-md-2 text-right"></div>
+          <div class="col-md-2 text-right"><a class="btn btn-info" href="/#!/projects/{{n.project._id}}">View the project</a></div>
+        </div>
+        <div class="row items grey-bkg">
+          <div class="col-md-12" data-ng-repeat="item in n.items">
+            <div class="row item">
+              <div class="col-md-2"><p>{{item.subType}}</p></div>
+              <div class="col-md-6"><p>{{item.title}} - {{item.description}}</p></div>
+              <div class="col-md-2 text-right"><p><span class="glyphicon glyphicon-calendar"></span> {{item.completionDate | date:'MM/dd/yyyy'}}</p></div>
+              <div class="col-md-2 text-right"><a class="btn btn-success" href="" data-ng-click="notification(n, item, 'accept')">Accept</a></div>
+              </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+</section>

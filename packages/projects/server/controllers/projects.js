@@ -5,9 +5,26 @@
  */
 var mongoose = require('mongoose'),
   Project = mongoose.model('Project'),
+  async = require('async'),
+  config = require('meanio').loadConfig(),
+  crypto = require('crypto'),
+  nodemailer = require('nodemailer'),
+  templates = require('../template'),
   _ = require('lodash');
 
 
+
+/*
+*
+* Send Mail
+*/
+function sendMail(mailOptions) {
+  var transport = nodemailer.createTransport(config.mailer);
+  transport.sendMail(mailOptions, function(err, response) {
+    if (err) return err;
+    return response;
+  });
+}
 /**
  * Find project by id
  */
@@ -25,6 +42,15 @@ exports.project = function(req, res, next, id) {
  */
 exports.create = function(req, res) {
   var project = new Project(req.body);
+  for(var i = 0; i < project.notifications.length; i++){
+    var notifications = project.notifications[i],
+        mailOptions = {
+          to: project.notifications[i].useremail,
+          from: config.emailFrom
+        };
+    mailOptions = templates.project_notification_email(notifications, project, req, mailOptions);
+    sendMail(mailOptions);
+  };
   project.user = req.user;
 
   project.save(function(err) {

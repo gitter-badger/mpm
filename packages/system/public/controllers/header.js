@@ -32,6 +32,7 @@ angular.module('mean.system').controller('HeaderController', ['$scope', '$rootSc
         authenticated: !! $rootScope.user,
         user: $rootScope.user
       };
+
     });
 
   }

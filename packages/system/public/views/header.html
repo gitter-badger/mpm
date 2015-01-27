@@ -1,12 +1,22 @@
 <div class="page-header" data-ng-controller="HeaderController">
   <div class="logo pull-left">
-    <a class="navbar-brand" ui-sref="home" mean-token="'site-title'">MPM</a>
+    <a class="navbar-brand" ui-sref="home" mean-token="'site-title'" ui-sref-active="active"><span class="glyphicon glyphicon-home"></span></a>
   </div>
 
   <div class="left pull-left">
     <ul class="navbar-nav nav">
+     <li class="dropdown" data-ng-show="global.authenticated">
+        <a href="#" class="dropdown-toggle" ng-class="{active: state === 'my-projects/assigned' || state === 'my-projects/requested' || state === 'my-projects/notifications'}" data-toggle="dropdown">
+          My Projects <b class="caret"></b>
+        </a>
+        <ul class="dropdown-menu">
+          <li><a ui-sref="assigned projects">Assigned</a></li>
+          <li><a ui-sref="requested projects">Requested</a></li>
+          <li><a ui-sref="project notifications">notifications</a></li>
+        </ul>
+      </li>
       <li data-ng-repeat="item in menus.main" ui-route="/{{item.link}}" ng-class="{active: $uiRoute}">
-        <a mean-token="item.link" ui-sref='{{item.link}}'>{{item.title}}</a>
+        <a mean-token="item.link" ui-sref='{{item.link}}' ui-sref-active="active">{{item.title}}</a>
       </li>
     </ul>
   </div>
@@ -22,6 +32,9 @@
       <li class="divider-vertical"></li>
       <li><a ui-sref='auth.login'>Log In</a>
       </li>
+    </ul>
+    <ul class="header-buttons" data-ng-show="global.authenticated">
+      <li><a mean-token="item.link" ui-sref="create project" class="ng-binding btn btn-success" href="#!/projects/create">Request a project</a></li>
     </ul>
     <ul class="navbar-nav nav" data-ng-show="global.authenticated">
       <li class="dropdown">

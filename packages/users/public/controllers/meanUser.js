@@ -63,6 +63,7 @@ angular.module('mean.users')
               }
             } else {
               $location.url('/');
+              window.location.reload();
             }
           })
           .error(function() {

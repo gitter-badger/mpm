@@ -79,7 +79,7 @@
   </div>
   <hr>
   &nbsp;
-  <h4>Project Items</h4>
+  <h4 class="text-center"><i class="glyphicon glyphicon-pushpin"></i> &nbsp;Project Items</h4>
   <div class="row info-box" data-ng-repeat="item in project.items">
     <div class="col-md-4"><h3>{{item.title}}</h3><h6>{{item.subType}}</h6></div>
     <div class="col-md-7"><h5><div class="col-md-2"><em>Progress:</em></div><div class="col-md-10"><progressbar class="progress-striped active" value="item.progress">{{item.progress}}%</progressbar></div></h5></div>
@@ -273,7 +273,14 @@
     <br>
     
     <div data-ng-controller="ModalController">
-      <h4>Discussions &nbsp;<button class="btn-default btn" data-ng-click="open('modal-newdiscussion.html', 'discussion', 'new')">start a new discussion </button></h4>
+      <h4 class="text-center"><i class="glyphicon glyphicon-comment"></i> &nbsp; Discussions</h4>
+      <p class="text-center"><button class="btn-default btn" data-ng-click="open('modal-newdiscussion.html', 'discussion', 'new')">start a new discussion </button></p>
+      <div class="row">
+        <div class="bg-info col-md-4 col-md-offset-4" data-ng-hide="hasProjectDisc(project)">
+          <h5 class="text-center"><i class="glyphicon glyphicon-info-sign"></i> &nbsp;No discussions have been started</h5>
+          <p class="text-center">To start a discussion, click the button above.</p>
+        </div>
+      </div>
       <hr>
       <script type="text/ng-template" id="modal-newdiscussion.html">
           <form data-ng-submit="ok()">
@@ -340,7 +347,7 @@
   
       <div data-ng-repeat="discussion in project.discussions">
         <div class="row">
-          <div class="col-md-2">{{discussion.creator.name.first}} {{discussion.creator.name.last}}</div>
+          <div class="col-md-2"><i class="glyphicon glyphicon-user"></i> {{discussion.creator.name.first}} {{discussion.creator.name.last}}</div>
           <div class="col-md-8"><a href data-ng-click="open('modal-discussion.html', 'discussion', discussion)">{{discussion.subject}}</a> - <span>{{discussion.messages[0].content}}</span></div>
           <div class="col-md-2">{{discussion.created | date:'MM/dd/yyyy' }}</div>
         </div>
@@ -349,9 +356,14 @@
 
     </div>
     
-
-    <h4>Files</h4>
+    <br/>
+    <h4 class="text-center"><i class="glyphicon glyphicon-paperclip"></i> &nbsp;Files</h4>
+    <hr/>
     <div class="row">
+      <div class="bg-info col-md-4 col-md-offset-4" data-ng-hide="hasProjectFiles(project)">
+        <h5 class="text-center"><i class="glyphicon glyphicon-info-sign"></i> &nbsp;No files have been added to this project</h5>
+        <p class="text-center">To add a file, open a project item, choose a file to upload and save the project item.</p>
+      </div>
       <div data-ng-repeat="item in project.items">
         <div class="col-md-2" data-ng-repeat="file in item.files">
           <h5>{{file.name}}</h5>

@@ -1,0 +1,71 @@
+<section data-ng-controller="ProjectsController" data-ng-init="find()">
+  <ul class="nav nav-stacked side-nav">
+    <li data-ng-repeat="tab in myProjects.tabs">
+      <a href="#!{{tab.path}}" class="">{{tab.name}}</a>
+    </li>
+  </ul>
+
+  <table data-ng-hide="tab === 4" class="table table-striped">
+    <thead><tr><th><a href data-ng-click="sortField = 'general.projectName'">Project Title</a></th><th><a href data-ng-click="sortField = 'created'">Requested On</a></th><th><a href data-ng-click="sortField = 'general.completionDate'">Req. Date Due</a></th><th><a href data-ng-click="sortField = 'general.user.name.last'">Requested By</a></th><th>Assigned To</th><th><a href data-ng-click="sortField = 'progress'">Status</a></th><th></th></tr></thead>
+    <tbody data-ng-show="tab === 1">
+    <tr data-ng-repeat="project in projects | orderBy:sortField">
+      <td><a href="/#!/projects/{{project._id}}" class="">{{project.general.projectName}}</a></td>
+      <td>{{project.created | date:'MM/dd/yyyy'}}</td>
+      <td>{{project.general.completionDate | date:'MM/dd/yyyy'}}</td>
+      <td>{{project.user.name.first}} {{project.user.name.last}}</td>
+      <td>{{project.requestType}}</td>
+      <td><progressbar class="progress-striped active" type="success" value="project.progresstotal">{{project.progresstotal}}%</progressbar></td>
+      <td>
+        <span data-ng-if="hasAuthorization(project)">
+          <a class="btn" data-ng-click="remove(project);">
+            <i class="glyphicon glyphicon-trash"></i>
+          </a>
+        </span></td>
+    </tr>
+    </tbody>
+
+    <tbody data-ng-show="tab === 2">
+    <tr data-ng-repeat="project in projectsAssigned">
+      <td><a href="/#!/projects/{{project._id}}" class="">{{project.general.projectName}}</a></td>
+      <td>{{project.created | date:'MM/dd/yyyy'}}</td>
+      <td>{{project.general.completionDate | date:'MM/dd/yyyy'}}</td>
+      <td>{{project.user.name.first}} {{project.user.name.last}}</td>
+      <td>{{project.requestType}}</td>
+      <td><progressbar class="progress-striped active" type="success" value="project.progresstotal">{{project.progresstotal}}%</progressbar></td>
+    </tr>
+    </tbody>
+
+    <tbody data-ng-show="tab === 3">
+    <tr data-ng-repeat="project in projectsRequested">
+      <td><a href="/#!/projects/{{project._id}}" class="">{{project.general.projectName}}</a></td>
+      <td>{{project.created | date:'MM/dd/yyyy'}}</td>
+      <td>{{project.general.completionDate | date:'MM/dd/yyyy'}}</td>
+      <td>{{project.user.name.first}} {{project.user.name.last}}</td>
+      <td>{{project.requestType}}</td>
+      <td><progressbar class="progress-striped active" type="success" value="project.progresstotal">{{project.progresstotal}}%</progressbar></td>
+    </tr>
+    </tbody>
+  </table>
+  
+  <table data-ng-show="tab === 4" class="table table-striped">
+    <thead>
+      <tr>
+        <th>Project Title</th>
+        <th>Requested On</th>
+        <th>Req. Due Date</th>
+        <th>Requested By</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr data-ng-repeat="project in projectNotifications">
+        <td><a href="/#!/projects/{{project._id}}" class="">{{project.general.projectName}}</a></td>
+        <td>{{project.created  | date:'MM/dd/yyyy'}}</td>
+        <td>{{project.general.completionDate  | date:'MM/dd/yyyy'}}</td>
+        <td>{{project.user.name.first}} {{project.user.name.last}}</td>
+        <td><a class="btn btn-info" href="/#!/projects/{{project._id}}" data-ng-click="notification(project, 'confirm')">Confirm</a></td>
+      </tr>
+    </tbody>
+  </table>
+  
+</section>

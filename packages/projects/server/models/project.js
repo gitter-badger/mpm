@@ -15,6 +15,12 @@ var ProjectSchema = new Schema({
     type: Date,
     default: Date.now
   },
+  //project activity log
+  activity: [{
+    action: String,
+    date: {type: Date, default: Date.now},
+    userId: String
+  }],
   //General info needed for every project request
   general: {
     name: {
@@ -108,6 +114,7 @@ var ProjectSchema = new Schema({
     subType: String,
     businessLine: String,
     description: String,
+    marketLead: String,
     distCodes: String,
     template: String,
     url: String,
@@ -147,13 +154,15 @@ var ProjectSchema = new Schema({
   },
   notifications: [{
     items: [{
+      department: String,
       item: String,
       description: String
     }],
     text: String,
     userId: String,
     username: String,
-    viewed: Boolean
+    useremail: String,
+    completed: Boolean
   }],
   discussions: [{
     subject: String,

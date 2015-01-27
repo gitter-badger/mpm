@@ -26,7 +26,84 @@ angular.module('mean.projects').controller('ProjectsController', ['$scope', '$st
       if(file.user._id === $scope.global.user._id) return $scope.global.isAdmin || true;
     };
 
+    $scope.hasProjectFiles = function(project){
+      if(!project) return false;
+      var count = 0;
+      for(var i in project.items){
+        for(var x in project.items[i].files){
+          count++;
+        }
+      }
+      if(count > 0) return true;
+    };
+
+    $scope.hasCompletedProjects = function(array){
+      if(!array) return false;
+      if(array.length > 0) return true;
+    }
+
+    $scope.hasProjectDisc = function(project){
+      if(!project) return false;
+      var count = 0;
+      for(var i in project.discussions){
+        count++;
+      }
+      if(count > 0) return true;
+    };
+
     $scope.alerts = [];
+
+    //Project Browse data and defaults --- could store in db later
+    $scope.browse = {
+      cat: 'All',
+      cats: [
+        {name: 'All', cat: 'All', active: true},
+        {name: 'Web', cat: 'Marketing: Web', active: false},
+        {name: 'Creative', cat: 'Marketing: Creative', active: false},
+        {name: 'Events', cat: 'Marketing: Events', active: false},
+        {name: 'Photo/Video', cat: 'Marketing: Photo/Video', active: false},
+        {name: 'Research', cat: 'Marketing: Research', active: false},
+        {name: 'Media', cat: 'Marketing: Media', active: false},
+        {name: 'Global', cat: 'Marketing: Global', active: false}
+      ],
+      months: [
+        {name: 'all', value: 'all'},
+        {name: 'January', value: '0'},
+        {name: 'February', value: '1'},
+        {name: 'March', value: '2'},
+        {name: 'April', value: '3'},
+        {name: 'May', value: '4'},
+        {name: 'June', value: '5'},
+        {name: 'July', value: '6'},
+        {name: 'August', value: '7'},
+        {name: 'September', value: '8'},
+        {name: 'October', value: '9'},
+        {name: 'November', value: '10'},
+        {name: 'December', value: '11'}
+      ],
+      years: [
+        {name: 'all', value: 'all'},
+        {name: '2014', value: '2014'},
+        {name: '2015', value: '2015'}
+      ],
+      sort: [
+        {name: 'Date Created', value: 'created'},
+        {name: 'Date Created Reverse', value: '-created'},
+        {name: 'Date Due', value: 'general.completionDate'},
+        {name: 'Date Due Reverse', value: '-general.completionDate'},
+        {name: 'Progress', value: 'progresstotal'},
+        {name: 'Progress Reverse', value: '-progresstotal'}
+      ]
+    };
+
+
+    $scope.selectCat = function(cat){
+      for(var i in $scope.browse.cats){
+        $scope.browse.cats[i].active = false;
+      }
+      cat.active = true;
+      return $scope.browse.cat = cat.cat;
+    };
 
     $scope.removeAlertDuplicate = function(kind){
       for(var a in $scope.alerts){
@@ -54,16 +131,15 @@ angular.module('mean.projects').controller('ProjectsController', ['$scope', '$st
         $totalprogress = $totalprogress + project.items[i].progress;
         $allProgress.push({item: project.items[i].subType, name: project.items[i].title, value: project.items[i].progress});
       }
+      if($totalprogress === null)$totalprogress = 0;
       project.progresslength = $count * 100;
-      project.progress = $totalprogress / $count;
-      project.progresstotal = $totalprogress / $count;
+      project.progress = Math.round($totalprogress / $count);
+      project.progresstotal = Math.round($totalprogress / $count);
     };
 
     $scope.progressUpdate = function(project, item){
       if(!$scope.hasItemAuth(project, item)) return false;
-      console.log('updating ' + item.subType + ' progress');
     };
-
 
     $scope.create = function(isValid) {
       if($scope.allProjectItems.count === 0){
@@ -103,7 +179,7 @@ angular.module('mean.projects').controller('ProjectsController', ['$scope', '$st
         });
 
         //load initial project progress
-        $scope.projectProgress(project);
+        //$scope.projectProgress(project);
 
         //setup project notifications for users to accecpt assigned project
         var $notifications = [];
@@ -113,22 +189,35 @@ angular.module('mean.projects').controller('ProjectsController', ['$scope', '$st
           for(var z in $scope.allProjectItems.items) { //loop through project items
             if($scope.users[i].department === $scope.allProjectItems.items[z].itemType) {
               $usersItems.push({
-                item: $scope.allProjectItems.items[z].itemType,
+                department: $scope.allProjectItems.items[z].itemType,
+                item: $scope.allProjectItems.items[z].subType,
                 description: $scope.allProjectItems.items[z].description
               }); 
             }
           }
           if($usersItems.length >= 1){
+            var $message = 'A new project needs your assistance with ' + $usersItems.length + ' items.';
             var $notification = {
               items: $usersItems,
               userId: $scope.users[i]._id,
               username: $scope.users[i].username,
-              viewed: false
+              useremail: $scope.users[i].email,
+              completed: false,
+              text: $message
             };
             $notifications.push($notification);
           }   
         }
         project.notifications = $notifications;
+
+        var $activity = [];
+        var $action = {
+          action: 'Created a new project named ' + this.projectName + '.',
+          userId: $scope.global.user._id
+        }
+        $activity.push($action);
+
+        project.activity = $activity;
 
         //save project
         project.$save(function(response) {
@@ -141,60 +230,46 @@ angular.module('mean.projects').controller('ProjectsController', ['$scope', '$st
       }
     };
 
-    $scope.notification = function(project, action) {
-        $scope.project = project;
+    $scope.notification = function(notification, item, action) {
+        $scope.project = notification.project;
+        console.log($scope.myprojects);
         switch(action) {
-          case 'confirm':
-            for(var x in $scope.project.notifications) {
-              if($scope.project.notifications[x].userId === $scope.global.user._id) {
-                $scope.project.notifications[x].viewed = true;
+          case 'accept':
+
+            var $pending = 0;
+
+            //check if there are other pending items
+            for(var i in $scope.project.items){
+              for(var u in $scope.project.items[i].users){
+                if($scope.project.items[i].users[u]._id === $scope.global.user._id){
+                  if($scope.project.items[i] === item){
+                    $scope.project.items[i].users[u].status = 'accepted';
+                    for(var n in $scope.myprojects.notifications){
+                      if($scope.myprojects.notifications[n] === notification){
+                        $scope.myprojects.notifications[n].items.splice(item, 1);
+                      }
+                    }
+                  }
+                  if($scope.project.items[i].users[u].status === 'pending'){
+                    $pending++;
+                  }
+                }
               }
             }
+
+            //if no more pending items set notification to complete
+            if($pending === 0){
+              for(var n in $scope.project.notifications){
+                if($scope.project.notifications[n] === notification.note){
+                  $scope.project.notifications[n].completed = true;
+                }
+              }
+            }
+
             break;
         }
         $scope.update(true);
     };
-
-    // $scope.accept = function(project){
-
-    //   $scope.user.projects.assigned.push({title: project.general.projectName, _id: project._id});
-
-    //   $http.put('/users/me', {
-    //           projects: {
-    //             assigned: $scope.user.projects.assigned,
-    //             requested: $scope.user.projects.requested
-    //           }
-    //       })
-    //       .success(function(response){
-    //         $scope.response = response;
-
-    //         for(var i in $scope.projectNotifications) {
-    //           if($scope.projectNotifications[i]._id === project._id){
-    //             $scope.projectNotifications.splice(i, 1);
-    //           }
-    //         }
-
-    //         for(var x in project.notifications) {
-    //           if(project.notifications[x].userId === $scope.user._id) {
-    //             project.notifications[x].status = 'accepted';
-    //             updateNotifications();
-    //             $scope.projectsAssigned.push(project);
-    //           }
-    //         }
-
-
-    //       })
-    //       .error(function(error){
-    //         $scope.response = error;
-    //       });
-    //   var updateNotifications = function(){
-    //     $http.put('/projects/' + project._id, {
-    //       notifications: project.notifications
-    //     })
-    //     .success(function(response){
-    //     });
-    //   };
-    // };
 
     $scope.remove = function(project) {
       if (project) {
@@ -214,8 +289,6 @@ angular.module('mean.projects').controller('ProjectsController', ['$scope', '$st
     };
 
     $scope.removeFile = function(item, file) {
-      console.log(file);
-      console.log(item);
       if(confirm('Are you sure you want to remove this file from your project?') === true){
         for(var f in item.files){
           if(item.files[f] === file){
@@ -247,37 +320,72 @@ angular.module('mean.projects').controller('ProjectsController', ['$scope', '$st
     $scope.find = function() {
       Projects.query(function(projects) {
         $scope.projects = projects;
-        $scope.projectsRequested = [];
-        $scope.projectNotifications = [];
-        $scope.projectsAssigned = [];
+        $scope.myprojects = {
+          notifications: [],
+          assigned: [],
+          requested: [],
+          completed: [],
+          activity: []
+        };
 
 
         //set assigned projects to $scope.projectsAssigned
         for(var d = 0; d < $scope.projects.length; d++) {
 
-          //create list of notifcations from projects for logged in user
-          for(var z in $scope.projects[d].notifications) {
-            if($scope.projects[d].notifications[z].userId === $scope.global.user._id && $scope.projects[d].notifications[z].viewed === false) {
-              $scope.projectNotifications.push($scope.projects[d]);
-            }
-          }
+          
+          var $notification = {},
+              $userItems = [],
+              $isAssigned = false,
+              $isComplete = false;
 
-          //set assigned projects to $scope.projectsAssigned
-          var isAssigned = false;
+          //set assigned
           for(var c in $scope.projects[d].items) {
               for(var e in $scope.projects[d].items[c].users) {
-                if($scope.projects[d].items[c].users[e]._id === $scope.global.user._id && $scope.projects[d].items[c].users[e].status === 'accepted') {
-                  isAssigned = true;
+                if($scope.projects[d].items[c].users[e]._id === $scope.global.user._id){
+                  if($scope.projects[d].items[c].users[e].status === 'pending') {
+                    $userItems.push($scope.projects[d].items[c]);
+                  }
+                  if($scope.projects[d].items[c].users[e].status === 'accepted') {
+                    $isAssigned = true;
+                    if($scope.projects[d].progress === 100){
+                      $isComplete = true;
+                    }
+                  }
                 }
               } 
           }
-          if(isAssigned === true)$scope.projectsAssigned.push($scope.projects[d]);
+          if($isAssigned === true)$scope.myprojects.assigned.push($scope.projects[d]);
+          if($isComplete === true)$scope.myprojects.completed.push($scope.projects[d]);
+
+          //create list of notifcations from projects for logged in user
+          for(var z in $scope.projects[d].notifications) {
+            if($scope.projects[d].notifications[z].userId === $scope.global.user._id && $scope.projects[d].notifications[z].completed === false) {
+              $notification = {
+                project: $scope.projects[d],
+                note: $scope.projects[d].notifications[z],
+                items: $userItems
+              };
+              $scope.myprojects.notifications.push($notification);
+            }
+          }
+
+          //set user actibity
+          for(var a in $scope.projects[d].activity){
+            if($scope.projects[d].activity[a].userId === $scope.global.user._id){
+              $scope.myprojects.activity.push($scope.projects[d].activity[a]);
+            }
+          }
 
           //set requested projects to $scope.projectsRequested
-          if($scope.projects[d].user._id === $scope.global.user._id)$scope.projectsRequested.push($scope.projects[d]);
+          if($scope.projects[d].user._id === $scope.global.user._id)$scope.myprojects.requested.push($scope.projects[d]);
         }
 
+        $scope.myprojects.assigned.len = $scope.myprojects.assigned.length;
+        $scope.myprojects.requested.len = $scope.myprojects.requested.length;
+        $scope.myprojects.notifications.len = $scope.myprojects.notifications.length;
+        $scope.myprojects.activity.len = $scope.myprojects.activity.length;
 
+        console.log($scope.myprojects.notifications);
 
       });
     };
@@ -345,6 +453,9 @@ angular.module('mean.projects').controller('ProjectsController', ['$scope', '$st
         {name: 'Vinyl Banner', template: 'modal-vinylbanner.html', department: 'Marketing: Creative'},
         {name: 'Signage', template: 'modal-signage.html', department: 'Marketing: Creative'},
         {name: 'Poster', template: 'modal-poster.html', department: 'Marketing: Creative'}
+      ], 
+      events: [
+        {name: 'Event', template: 'modal-event.html', department: 'Marketing: Events'}
       ]
     };
 
@@ -452,7 +563,6 @@ angular.module('mean.projects').controller('ProjectsController', ['$scope', '$st
 
         $scope.assets = {files: []};
         $scope.isNewItem = true;
-        console.log('opening item modal');
 
           if($scope.modalType === null) {
             $scope.modalType = {name: item.subType, template: item.template, department: item.itemType};    
@@ -468,7 +578,6 @@ angular.module('mean.projects').controller('ProjectsController', ['$scope', '$st
         break;
 
         case 'discussion':
-        console.log('opening discussion modal');
           if(item !== 'new') {
             $scope.openDiscussion = item;
           }
@@ -540,7 +649,6 @@ angular.module('mean.projects').controller('ProjectsController', ['$scope', '$st
             $scope.allProjectItems.items.push($scope.newItem);
             $scope.allProjectItems.count++;
             $scope.removeAlertDuplicate('no-items');
-            console.log($scope.allProjectItems);
 
             //if we are editing an item in an existing project
             if($scope.project){
@@ -692,7 +800,88 @@ angular.module('mean.projects').controller('ProjectsController', ['$scope', '$st
       $modalInstance.dismiss(type);
     };
   }
- ]);
+ ]).filter('catFilter', function(){
+  return function(projects, cat){
+    if(cat === 'All' || cat === undefined )return projects;
+
+    var filtered = [];
+    for(var i = 0; i < projects.length; i++){
+      var match = false;
+      var project = projects[i];
+      for(var x = 0; x < project.items.length; x++){
+        var item = project.items[x];
+        if(item.itemType === cat){
+          match = true;
+        }
+      }
+      if(match === true){
+        filtered.push(project);
+      }
+    }
+    return filtered;
+  };
+ }).filter('dateFilter', function(){
+  return function(projects, fyear, fmonth){
+    if((fyear === 'all' || fyear === undefined) && (fmonth === 'all' || fmonth === undefined))return projects;
+
+
+    var filtered = [];
+
+    //only month is defined
+    if(fyear === 'all' || fyear === undefined){
+      //add only month to filter
+      var theMonth = (new Date(1, fmonth, 1)).getMonth(),
+          minMonth = theMonth - 1,
+          maxMonth = theMonth + 1;
+      for(var x = 0; x < projects.length; x++){
+        var project = projects[x],
+            projMonth = (new Date(project.created)).getMonth();
+        if(projMonth < maxMonth && projMonth > minMonth){
+          filtered.push(project);
+        }
+      }
+    }
+
+    //only year is defined
+    else if(fmonth === 'all' || fmonth === undefined){
+      //add only year to filter
+      var theYear = (new Date(fyear, 1, 1)).getFullYear(),
+          minYear = theYear - 1,
+          maxYear = theYear + 1;
+      for(var i = 0; i < projects.length; i++){
+       var  project = projects[i],
+            projYear = (new Date(project.created)).getFullYear();
+       if(projYear < maxYear && projYear > minYear){
+        filtered.push(project);
+       }
+      }
+    }
+
+    //both are defined
+    else{
+      //add both year and month to filter
+      var theMonth = (new Date(1, fmonth, 1)).getMonth(),
+          minMonth = theMonth - 1,
+          maxMonth = theMonth + 1,
+          theYear = (new Date(fyear, 1, 1)).getFullYear(),
+          minYear = theYear - 1,
+          maxYear = theYear + 1;
+
+      for(var y = 0; y < projects.length; y++){
+        var project = projects[y],
+            projYear = (new Date(project.created)).getFullYear(),
+            projMonth = (new Date(project.created)).getMonth();
+        if((projMonth < maxMonth && projMonth > minMonth) && (projYear < maxYear && projYear > minYear)){
+          filtered.push(project);
+        }
+      }
+    }
+    
+    
+    
+    return filtered;
+  };
+ });
 
 
 

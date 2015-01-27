@@ -25,9 +25,30 @@ angular.module('mean.projects').config(['$stateProvider',
 
     // states for my app
     $stateProvider
-      .state('all projects', {
+    .state('browse projects', {
         url: '/projects',
         templateUrl: 'projects/views/list.html',
+        resolve: {
+          loggedin: checkLoggedin
+        }
+      })
+      .state('assigned projects', {
+        url: '/my-projects/assigned',
+        templateUrl: 'projects/views/my-projects/assigned.html',
+        resolve: {
+          loggedin: checkLoggedin
+        }
+      })
+      .state('requested projects', {
+        url: '/my-projects/requested',
+        templateUrl: 'projects/views/my-projects/requested.html',
+        resolve: {
+          loggedin: checkLoggedin
+        }
+      })
+      .state('project notifications', {
+        url: '/my-projects/notifications',
+        templateUrl: 'projects/views/my-projects/notifications.html',
         resolve: {
           loggedin: checkLoggedin
         }

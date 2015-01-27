@@ -114,7 +114,7 @@ exports.me = function(req, res) {
  * Send All Users
  */
 exports.all = function(req, res) {
-  User.find({}, {hashed_password: 0, salt: 0, __v: 0}).exec(function(err, users) {
+  User.find({}, {hashed_password: 0, salt: 0, __v: 0, resetPasswordToken: 0, resetPasswordExpires: 0}).exec(function(err, users) {
     if (err) {
       return res.json(500, {
         error: 'Cannot list the users'

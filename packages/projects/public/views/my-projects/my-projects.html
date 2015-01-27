@@ -1,0 +1,52 @@
+<section data-ng-controller="ProjectsController" data-ng-init="find()">
+<h3><span class="glyphicon glyphicon-dashboard"></span> {{global.user.name.first}} {{global.user.name.last}}</h3>
+<br/>
+<div class="row counters">
+  <div class="col-md-4 text-center">
+    <div class="border">
+      <span class="count">{{myprojects.assigned.len}}</span>
+    </div>
+    <div class="grey-bkg padding20">
+     <a ui-sref="assigned projects">Assigned Projects</a>
+    </div>
+  </div>
+  <div class="col-md-4 text-center">
+    <div class="border">
+      <span class="count">{{myprojects.requested.len}}</span>
+    </div>
+    <div class="grey-bkg padding20">
+     <a ui-sref="requested projects">Requested Projects</a>
+    </div>
+  </div>
+  <div class="col-md-4 text-center">
+    <div class="border">
+      <span class="count">{{myprojects.notifications.len}}</span>
+    </div>
+    <div class="grey-bkg padding20">
+     <a ui-sref="project notifications">Project Notifications</a>
+    </div>
+  </div>
+  
+</div>
+
+<br/>
+<br/>
+
+<div class="row">
+  <div class="col-md-6">
+    <h4><span class="glyphicon glyphicon-ok-circle"></span> My Completed Projects</h4>
+    <div class="bg-info padding10 col-md-10" data-ng-hide="hasCompletedProjects(myprojects.completed)">
+        <h5 class="text-center"><i class="glyphicon glyphicon-info-sign"></i> &nbsp;None of your assigned projects are complete.</h5>
+    </div>
+    <p data-ng-repeat="project in myprojects.completed">{{project.general.projectName}}</p>
+  </div>
+  <div class="col-md-6">
+    <h4><span class="glyphicon glyphicon-list-alt"></span> My Recent Activity</h4>
+    <div class="bg-info padding10 col-md-10" data-ng-hide="hasRecentActivity(global.user)">
+        <h5 class="text-center"><i class="glyphicon glyphicon-info-sign"></i> &nbsp;You have no recent activity.</h5>
+    </div>
+  </div>
+</div>
+  
+  
+</section>

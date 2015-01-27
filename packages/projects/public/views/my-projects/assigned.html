@@ -1,0 +1,63 @@
+<section data-ng-controller="ProjectsController" data-ng-init="find()">
+  
+  <div class="col-md-2">
+    <ul class="nav nav-stacked side-nav">
+      <li active="true"><a ui-sref="assigned projects">Assigned</a></li>
+      <li><a ui-sref="requested projects">Requested</a></li>
+      <li><a ui-sref="project notifications">Notifications</a></li>
+    </ul>
+  </div>
+  <div class="col-md-10 padding-left">
+    <div class="projectNav row">
+      <div class="left col-md-3">
+        <span class="glyphicon glyphicon-th"></span>
+        &nbsp;
+        <span class="glyphicon glyphicon-th-list"></span>
+      </div>
+      <div class="middle col-md-6">
+        Year:
+        <select data-ng-model="fyear" data-ng-init="fyear = 'all'">
+          <option data-ng-repeat="option in browse.years" value="{{option.value}}">{{option.name}}</option>
+        </select>
+        &nbsp;
+        Month:
+        <select data-ng-model="fmonth" data-ng-init="fmonth = 'all'">
+          <option data-ng-repeat="option in browse.months" value="{{option.value}}">{{option.name}}</option>
+        </select>
+      </div>
+      <div class="right col-md-3">
+        Sort:
+        <select data-ng-model="sortField" data-ng-init="sortField = 'created'">
+          <option data-ng-repeat="option in browse.sort" value="{{option.value}}">{{option.name}}</option>
+        </select>
+      </div>
+    </div>
+
+    <hr/>
+    
+    <div class="row project" data-ng-repeat="project in myprojects.assigned | dateFilter:fyear:fmonth | orderBy:sortField">
+      <div class="col-md-12">
+        <div class="row general border">
+        <!-- <span data-ng-if="hasAuthorization(project)">
+            <a class="btn" data-ng-click="remove(project);">
+              <i class="glyphicon glyphicon-trash"></i>
+            </a>
+          </span></td> -->
+        <div class="col-md-4"><h1><a href="/#!/projects/{{project._id}}" class="">{{project.general.projectName}}</a></h1><p><span class="glyphicon glyphicon-user"></span> {{project.user.name.first}} {{project.user.name.last}} &nbsp; <span class="glyphicon glyphicon-calendar"></span> <span class="date">{{project.created | date:'MM/dd/yyyy'}}</span></p></div>
+        <div class="col-md-6"><progressbar class="progress-striped active" type="success" value="project.progresstotal">{{project.progresstotal}}%</progressbar></div>
+        <div class="col-md-2"><p class="due-date"><span class="glyphicon glyphicon-calendar"></span> {{project.general.completionDate | date:'MM/dd/yyyy'}}</p></div>
+        </div>
+        <div class="row items grey-bkg">
+          <div class="col-md-12" data-ng-repeat="item in project.items">
+            <div class="row item">
+              <div class="col-md-2">{{item.subType}}</div>
+              <div class="col-md-4">{{item.title}}</div>
+              <div class="col-md-4"><progressbar class="progress-striped active" type="success" value="item.progress">{{item.progress}}%</progressbar></div>
+              <div class="col-md-2"><span class="glyphicon glyphicon-calendar"></span> {{item.completionDate | date:'MM/dd/yyyy'}}</div>
+              </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

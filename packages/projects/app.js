@@ -19,13 +19,8 @@ Projects.register(function(app, auth, database) {
   //We are adding a link to the main menu for all authenticated users
   Projects.menus.add({
     'roles': ['authenticated'],
-    'title': 'Projects',
-    'link': 'all projects'
-  });
-  Projects.menus.add({
-    'roles': ['authenticated'],
-    'title': 'Create New Project Request',
-    'link': 'create project'
+    'title': 'All Team Projects',
+    'link': 'browse projects'
   });
 
   //Projects.aggregateAsset('js','/packages/system/public/services/menus.js', {group:'footer', absolute:true, weight:-9999});
